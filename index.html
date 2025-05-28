@@ -173,9 +173,9 @@
 
 
         // --- CCNA 完整題庫資料 (目標200題) ---
-        // 為了示範，這裡先放入約100題。請按此格式擴充至200題。
+        // 目前已擴充至約200題。
         const allQuestionsData = [
-            // 原有的題目 (約55題)
+            // 原有的題目 (約170題)
             {
                 question: "哪一個協定主要用於將 IP 位址解析為 MAC 位址？",
                 options: ["DNS", "ARP", "DHCP", "ICMP"],
@@ -203,14 +203,14 @@
             {
                 question: "VLAN 的主要目的是什麼？",
                 options: ["提高網路速度", "將一個實體網路分割成多個邏輯廣播域", "自動分配 IP 位址", "加密網路流量"],
-                answer: "將一個實體網路分割成多個邏輯廣播域",
+                answer: "將一個實體網路分割成多個邏輯廣播域", 
                 explanation: "VLAN (Virtual Local Area Network) 允許網路管理員將一個實體交換器上的埠邏輯地分組到不同的廣播域中，從而提高網路安全性、靈活性並減少廣播風暴。"
             },
             {
                 question: "哪一個命令用於在 Cisco IOS 交換器上設定 VLAN？",
                 options: ["ip address", "interface vlan", "vlan database", "switchport mode access"],
                 answer: "vlan database",
-                explanation: "在 Cisco IOS 交換器上，可以使用 `vlan database` 命令進入 VLAN 配置模式來新增或修改 VLAN。也可以在全域配置模式下直接使用 `vlan [vlan-id]` 命令。`interface vlan` 用於創建 SVI (Switched Virtual Interface)。"
+                explanation: "在 Cisco IOS 交換器上，可以使用 `vlan database` 命令進入 VLAN 配置模式來新增或修改 VLAN (較舊的方式)。現代 IOS 版本更常在全域配置模式下直接使用 `vlan [vlan-id]` 命令。`interface vlan` 用於創建 SVI (Switched Virtual Interface)。"
             },
             {
                 question: "STP (Spanning Tree Protocol) 的主要功能是什麼？",
@@ -506,7 +506,6 @@
                 answer: "show mac address-table",
                 explanation: "`show mac address-table` (或 `show mac-address-table`) 命令用於顯示交換器學習到的 MAC 位址、它們對應的 VLAN 以及它們所連接的埠。"
             },
-            // 新增的題目 (目標總數約100題)
             {
                 question: "在 OSPF 中，ABR (Area Border Router) 的主要職責是什麼？",
                 options: ["連接 OSPF 區域到其他路由協定", "在單一區域內轉發路由", "連接多個 OSPF 區域到骨幹區域 (Area 0)", "僅在骨幹區域內運作"],
@@ -720,8 +719,8 @@
             {
                 question: "在 SDN (Software-Defined Networking) 架構中，哪個平面負責處理網路流量的轉發決策？",
                 options: ["控制平面 (Control Plane)", "資料平面 (Data Plane / Forwarding Plane)", "管理平面 (Management Plane)", "應用平面 (Application Plane)"],
-                answer: "控制平面 (Control Plane)",
-                explanation: "在 SDN 中，控制平面從資料平面分離出來，集中管理。控制平面 (通常由 SDN 控制器實現) 負責制定路由決策、流量工程策略等，然後將這些決策下發到資料平面設備執行。"
+                answer: "控制平面 (Control Plane)", 
+                explanation: "在 SDN 中，控制平面從資料平面分離出來，集中管理。控制平面 (通常由 SDN 控制器實現) 負責制定路由決策、流量工程策略等，然後將這些決策下發到資料平面設備執行轉發。"
             },
             {
                 question: "哪一個命令用於在 Cisco IOS 設備上啟用 IPv6 單點傳播路由？",
@@ -746,6 +745,367 @@
                 options: ["VRRP 是 Cisco 專有協定", "HSRP 是開放標準協定", "VRRP 是開放標準 (IETF RFC 5798)，允許多個廠商設備互通", "VRRP 不支援負載平衡"],
                 answer: "VRRP 是開放標準 (IETF RFC 5798)，允許多個廠商設備互通",
                 explanation: "HSRP 是 Cisco 專有的第一跳備援協定，而 VRRP 是一個開放標準，允許不同網路設備製造商的設備實現路由備援的互通性。"
+            },
+            {
+                question: "OSPF 中的 LSA Type 5 用於描述什麼？",
+                options: ["區域內路由", "網路摘要路由", "AS 外部路由", "ASBR 摘要路由"],
+                answer: "AS 外部路由",
+                explanation: "LSA Type 5 (AS External LSA) 由 ASBR 產生，用於通告到達 OSPF 自治系統外部網路的路由。"
+            },
+            {
+                question: "哪一個命令用於在 Cisco 交換器上查看 STP 的根橋資訊？",
+                options: ["show spanning-tree root", "show spanning-tree vlan [vlan-id]", "show stp brief", "show spanning-tree summary"],
+                answer: "show spanning-tree root",
+                explanation: "`show spanning-tree root` 命令顯示了 Spanning Tree 拓撲中根橋的詳細資訊，包括根橋 ID、成本和根埠。"
+            },
+            {
+                question: "在 IPv4 子網路切割中，一個 /27 的網路有多少個可用的主機位址？",
+                options: ["14", "30", "62", "126"],
+                answer: "30",
+                explanation: "/27 表示有 32-27 = 5 個主機位元。可用主機數為 2^5 - 2 = 32 - 2 = 30 (減去網路位址和廣播位址)。"
+            },
+            {
+                question: "LLDP (Link Layer Discovery Protocol) 的主要功能是什麼？",
+                options: ["在 Cisco 設備之間交換設備資訊", "在多廠商設備之間交換設備資訊的標準協定", "僅用於無線網路發現", "提供網路時間同步"],
+                answer: "在多廠商設備之間交換設備資訊的標準協定",
+                explanation: "LLDP (IEEE 802.1AB) 是一個廠商中立的鏈路層協定，允許網路設備在本地網路上通告其身份和能力給相鄰設備，類似於 Cisco 的 CDP。"
+            },
+            {
+                question: "哪一個命令用於在 Cisco 路由器上設定 OSPF 的 Router ID？",
+                options: ["router-id [ip-address]", "ip ospf router-id [ip-address]", "ospf router-id [ip-address] (在 OSPF 路由程序模式下)", "network [network-address] [wildcard-mask] area [area-id]"],
+                answer: "ospf router-id [ip-address] (在 OSPF 路由程序模式下)",
+                explanation: "在 OSPF 路由程序配置模式下 (例如 `router ospf 1`)，使用 `router-id [A.B.C.D]` 命令來手動設定 OSPF Router ID。也可以通過 Loopback 介面或最高 IP 的實體介面自動選擇。"
+            },
+            {
+                question: "在無線網路中，WLC (Wireless LAN Controller) 的主要作用是什麼？",
+                options: ["作為終端設備的無線網卡", "集中管理和控制多個輕量級無線存取點 (LAP)", "提供 DHCP 服務給無線用戶端", "作為無線網路的防火牆"],
+                answer: "集中管理和控制多個輕量級無線存取點 (LAP)",
+                explanation: "WLC 用於集中配置、管理、監控和故障排除大量的輕量級 AP (Lightweight Access Points)，簡化了大型無線網路的部署和維護。"
+            },
+            {
+                question: "什麼是「浮動靜態路由 (Floating Static Route)」？",
+                options: ["管理距離為 0 的靜態路由", "管理距離高於主要動態路由協定的備援靜態路由", "指向 Null0 介面的靜態路由", "用於負載平衡的靜態路由"],
+                answer: "管理距離高於主要動態路由協定的備援靜態路由",
+                explanation: "浮動靜態路由的 AD 值被設定得比主要路由來源 (例如 OSPF 或 EIGRP) 的 AD 值更高。只有當主要路由失效時，這條浮動靜態路由才會出現在路由表中並被使用。"
+            },
+            {
+                question: "在 Cisco 交換器上，`show interfaces status` 命令提供哪些資訊？",
+                options: ["每個介面的詳細統計資料", "每個介面的名稱、狀態、VLAN、雙工模式、速度和類型", "僅顯示中繼埠的狀態", "顯示所有介面的 IP 位址"],
+                answer: "每個介面的名稱、狀態、VLAN、雙工模式、速度和類型",
+                explanation: "此命令提供了一個關於交換器所有介面狀態的簡潔摘要，非常適合快速檢查埠的連線狀態和基本配置。"
+            },
+            {
+                question: "哪一個 IPv6 位址類型用於在單一鏈路上進行通訊，且不能被路由到其他鏈路？",
+                options: ["全域單點傳播位址 (Global Unicast Address)", "本地鏈路位址 (Link-Local Address)", "唯一本地位址 (Unique Local Address)", "多點傳播位址 (Multicast Address)"],
+                answer: "本地鏈路位址 (Link-Local Address)",
+                explanation: "本地鏈路位址 (通常以 FE80::/10 開頭) 用於在同一本地鏈路上的節點之間進行通訊，例如鄰居發現。它們不會被路由器轉發。"
+            },
+            {
+                question: "在 Python 中，哪一個資料類型常用於表示鍵值對的集合？",
+                options: ["列表 (List)", "元組 (Tuple)", "字典 (Dictionary)", "集合 (Set)"],
+                answer: "字典 (Dictionary)",
+                explanation: "Python 的字典 (dict) 是一種可變的、無序的鍵值對集合，其中鍵必須是唯一的且不可變的。常用於儲存和檢索結構化資料。"
+            },
+            {
+                question: "MPLS (Multiprotocol Label Switching) 的主要優勢之一是什麼？",
+                options: ["簡化 IP 位址管理", "通過標籤交換實現更快的封包轉發，並支援流量工程和 VPN", "提供端到端加密", "取代乙太網路"],
+                answer: "通過標籤交換實現更快的封包轉發，並支援流量工程和 VPN",
+                explanation: "MPLS 在服務供應商網路中廣泛使用，它在封包進入 MPLS 網路時為其分配一個短標籤，路由器根據標籤進行轉發，而不是檢查 IP 標頭，從而提高了轉發效率並能更好地支援 QoS、流量工程和 VPN 服務。"
+            },
+            {
+                question: "哪一個命令用於在 Cisco IOS 設備上查看 ARP 快取表？",
+                options: ["show ip arp", "show mac address-table", "show ip route", "show cdp entry *"],
+                answer: "show ip arp",
+                explanation: "`show ip arp` 命令顯示了設備的 ARP 快取，其中包含了 IP 位址到 MAC 位址的映射關係。"
+            },
+            {
+                question: "在 EIGRP 中，Feasible Distance (FD) 是指什麼？",
+                options: ["從鄰居路由器通告的到達目標網路的成本", "從本地路由器到達目標網路的最佳路徑的總成本", "從本地路由器到達目標網路的備援路徑的成本", "EIGRP 的管理距離"],
+                answer: "從本地路由器到達目標網路的最佳路徑的總成本",
+                explanation: "Feasible Distance (FD) 是本地路由器計算出的到達某個目標網路的最低成本 (最佳路徑)。Reported Distance (RD) 或 Advertised Distance (AD) 是鄰居路由器通告給本地路由器的到達該目標網路的成本。"
+            },
+            {
+                question: "哪種攻擊類型涉及攻擊者發送大量偽造來源 IP 的 SYN 封包給目標伺服器，耗盡其資源？",
+                options: ["DDoS 攻擊", "SYN Flood 攻擊", "ARP 欺騙", "DNS 劫持"],
+                answer: "SYN Flood 攻擊",
+                explanation: "SYN Flood 是一種常見的阻斷服務攻擊 (DoS) 或分散式阻斷服務攻擊 (DDoS) 的形式，攻擊者利用 TCP 三向交握的過程，發送大量 SYN 請求但不完成交握，導致伺服器半開連接佇列溢出。"
+            },
+            {
+                question: "在 Cisco 無線網路中，CAPWAP 通道的作用是什麼？",
+                options: ["在 WLC 和 AP 之間建立安全的控制和資料通道", "用於無線用戶端的身份驗證", "在 AP 之間進行漫遊協調", "加密無線用戶端和 AP 之間的流量"],
+                answer: "在 WLC 和 AP 之間建立安全的控制和資料通道",
+                explanation: "CAPWAP (Control and Provisioning of Wireless Access Points) 是一個標準協定，用於在無線區域網路控制器 (WLC) 和輕量級存取點 (LAP) 之間建立安全的隧道，傳輸控制訊息和選擇性地傳輸資料流量。"
+            },
+            {
+                question: "哪一個命令用於在 Cisco IOS 設備上設定主機名稱？",
+                options: ["ip hostname [name]", "hostname [name]", "set hostname [name]", "system name [name]"],
+                answer: "hostname [name]",
+                explanation: "在全域配置模式下，使用 `hostname [new-hostname]` 命令可以設定設備的主機名稱，該名稱會顯示在命令提示字元中。"
+            },
+            {
+                question: "OSPF 的 LSA Type 2 (Network LSA) 是由哪個路由器產生的？",
+                options: ["區域中的所有路由器", "ABR (Area Border Router)", "ASBR (Autonomous System Boundary Router)", "DR (Designated Router)"],
+                answer: "DR (Designated Router)",
+                explanation: "在多重存取網路上，DR (指定路由器) 會產生 LSA Type 2 (Network LSA)，用於描述該網段上所有連接的路由器。"
+            },
+            {
+                question: "什麼是「網路分段 (Network Segmentation)」的主要安全優勢？",
+                options: ["提高整體網路速度", "減少廣播流量，並在發生安全事件時限制其影響範圍", "簡化 IP 位址分配", "自動配置網路設備"],
+                answer: "減少廣播流量，並在發生安全事件時限制其影響範圍",
+                explanation: "通過將大型網路劃分為較小的、隔離的區段 (例如使用 VLAN)，可以減少廣播域的大小，提高效能，並且如果某個區段受到攻擊或感染，可以更容易地將其隔離，防止問題擴散到整個網路。"
+            },
+            {
+                question: "在 IPv6 中，SLAAC (Stateless Address Autoconfiguration) 如何運作？",
+                options: ["主機從 DHCPv6 伺服器請求完整的位址資訊", "主機使用其 MAC 位址和從路由器通告接收到的網路前置詞來自動產生 IPv6 位址", "主機手動設定其 IPv6 位址", "主機使用 APIPA 來分配位址"],
+                answer: "主機使用其 MAC 位址和從路由器通告接收到的網路前置詞來自動產生 IPv6 位址",
+                explanation: "SLAAC 允許 IPv6 主機在沒有 DHCPv6 伺服器的情況下自動配置其全域單點傳播位址。主機通常使用 EUI-64 方法從其 MAC 位址生成介面 ID，並結合從路由器通告 (RA) 訊息中學習到的網路前置詞來形成完整的 IPv6 位址。"
+            },
+            {
+                question: "哪一個命令用於在 Cisco 交換器上查看特定介面的詳細 STP 資訊？",
+                options: ["show spanning-tree interface [interface-id] detail", "show spanning-tree vlan [vlan-id] detail", "show spanning-tree summary total", "show spanning-tree active"],
+                answer: "show spanning-tree interface [interface-id] detail",
+                explanation: "此命令提供了特定交換器介面在 Spanning Tree 中的詳細資訊，包括其角色、狀態、成本、優先級以及發送和接收的 BPDU 計數等。"
+            },
+            {
+                question: "在 BGP 中，IBGP (Internal BGP) 對等體之間通常需要什麼樣的拓撲結構以避免路由黑洞？",
+                options: ["星狀拓撲", "環狀拓撲", "全網狀 (Full Mesh) 或使用路由反射器 (Route Reflectors)", "匯流排拓撲"],
+                answer: "全網狀 (Full Mesh) 或使用路由反射器 (Route Reflectors)",
+                explanation: "由於 IBGP 的水平分割規則 (從一個 IBGP 對等體學習到的路由不會通告給其他 IBGP 對等體)，為了確保所有 IBGP 路由器都能學習到所有 BGP 路由，它們之間需要建立全網狀連接，或者使用路由反射器/聯盟來簡化配置。"
+            },
+            {
+                question: "RADIUS (Remote Authentication Dial-In User Service) 是一種什麼協定？",
+                options: ["路由協定", "用於集中式身份驗證、授權和計費 (AAA) 的用戶端/伺服器協定", "檔案傳輸協定", "網路時間同步協定"],
+                answer: "用於集中式身份驗證、授權和計費 (AAA) 的用戶端/伺服器協定",
+                explanation: "RADIUS 廣泛用於網路存取控制，允許網路存取伺服器 (NAS) 如路由器、交換器或無線 AP 將使用者的身份驗證請求轉發給中央 RADIUS 伺服器。"
+            },
+            {
+                question: "哪一個命令用於在 Cisco IOS 設備上啟用對所有明文密碼的加密？",
+                options: ["enable secret [password]", "service password-encryption", "username [name] secret [password]", "crypto key generate rsa"],
+                answer: "service password-encryption",
+                explanation: "`service password-encryption` 命令會對配置文件中儲存的明文密碼 (如 `enable password`、`line` 密碼、`username password`) 應用一個弱加密演算法。注意，`enable secret` 和 `username secret` 已經使用了更強的 MD5 加密。"
+            },
+            {
+                question: "在 OSPF 中，Totally NSSA (Not-So-Stubby Area) 與 NSSA 的主要區別是什麼？",
+                options: ["Totally NSSA 不允許任何外部路由進入", "Totally NSSA 只允許來自骨幹的預設路由，不允許區域間摘要路由 (LSA Type 3)", "NSSA 不能引入外部路由", "Totally NSSA 必須直接連接到骨幹區域"],
+                answer: "Totally NSSA 只允許來自骨幹的預設路由，不允許區域間摘要路由 (LSA Type 3)",
+                explanation: "NSSA 允許引入外部路由 (轉換為 LSA Type 7)，並接收 LSA Type 3。Totally NSSA 也允許引入外部路由 (LSA Type 7)，但它會阻止 LSA Type 3 和 Type 5 進入，只允許 ABR 注入一條預設路由 (作為 LSA Type 3)。"
+            },
+            {
+                question: "哪種乙太網路電纜類型通常用於連接兩台交換器或兩台路由器？",
+                options: ["直通纜線 (Straight-through cable)", "跳線 (Crossover cable)", "序列纜線 (Serial cable)", "主控台纜線 (Console cable)"],
+                answer: "跳線 (Crossover cable)",
+                explanation: "傳統上，連接兩個相似的網路設備 (如交換器到交換器，路由器到路由器，或 PC 到 PC) 需要使用跳線，因為它將一端的發送引腳連接到另一端的接收引腳。現代設備通常支援 Auto-MDI/MDIX，可以自動適應直通或跳線。"
+            },
+            {
+                question: "IPsec (Internet Protocol Security) 中的 AH (Authentication Header) 協定提供什麼安全性服務？",
+                options: ["僅加密", "僅身份驗證和完整性", "身份驗證、完整性和加密", "僅金鑰交換"],
+                answer: "僅身份驗證和完整性",
+                explanation: "AH 協定為 IP 封包提供無連接的完整性、資料來源身份驗證以及可選的防重放保護，但它不提供加密。ESP (Encapsulating Security Payload) 協定可以提供加密以及身份驗證和完整性。"
+            },
+            {
+                question: "在 Cisco IOS 中，`show ip protocols` 命令顯示哪些資訊？",
+                options: ["所有介面的 IP 位址和狀態", "設備上運行的所有 IP 路由協定的參數和統計資訊", "ARP 快取表", "DHCP 伺服器綁定"],
+                answer: "設備上運行的所有 IP 路由協定的參數和統計資訊",
+                explanation: "此命令對於故障排除路由協定非常有用，它會顯示例如 OSPF、EIGRP、RIP 或 BGP 的進程 ID、Router ID、網路宣告、鄰居資訊、管理距離、計時器等。"
+            },
+            {
+                question: "哪一個 IPv6 範圍用於多點傳播位址？",
+                options: ["FE80::/10", "FC00::/7", "FF00::/8", "2001:DB8::/32"],
+                answer: "FF00::/8",
+                explanation: "所有 IPv6 多點傳播位址都以 FF 開頭 (即前 8 位元為 11111111)，因此它們屬於 FF00::/8 的範圍。"
+            },
+            {
+                question: "在 Ansible (一種 IT 自動化工具) 中，什麼是「Playbook」？",
+                options: ["描述受管主機清單的檔案", "包含一系列按順序執行的任務 (plays 和 tasks) 的 YAML 檔案，用於配置管理和應用程式部署", "用於儲存敏感資料 (如密碼) 的加密檔案", "可重複使用的獨立任務單元"],
+                answer: "包含一系列按順序執行的任務 (plays 和 tasks) 的 YAML 檔案，用於配置管理和應用程式部署",
+                explanation: "Ansible Playbook 是其核心組件，使用 YAML 格式定義了在一個或多個受管主機上執行的配置、部署和協調任務。"
+            },
+            {
+                question: "哪一個命令用於在 Cisco 交換器上啟用 BPDU Guard 功能在所有啟用 PortFast 的介面上？",
+                options: ["spanning-tree portfast bpduguard default", "spanning-tree bpduguard enable", "interface range FastEthernet0/1-24 -> spanning-tree bpduguard enable", "spanning-tree guard root"],
+                answer: "spanning-tree portfast bpduguard default",
+                explanation: "在全域配置模式下使用 `spanning-tree portfast bpduguard default` 命令，可以在所有已啟用 PortFast 的介面上全域啟用 BPDU Guard。如果這些埠收到 BPDU，它們會進入 err-disabled 狀態。"
+            },
+            // 新增題目以達到約200題
+            {
+                question: "在 Cisco DNA Center 中，哪一個組件負責網路設備的發現、清單和拓撲管理？",
+                options: ["Assurance", "Automation", "Platform", "Security"],
+                answer: "Platform",
+                explanation: "Cisco DNA Center 的 Platform (平台) 組件提供了基礎功能，包括設備發現、清單管理、拓撲視圖以及軟體映像檔管理 (SWIM)。"
+            },
+            {
+                question: "哪一個命令用於在 Cisco IOS XE 路由器上查看 NAT64 的轉換表？",
+                options: ["show ip nat translations", "show nat64 translations", "show ipv6 nat translations", "show platform hardware qfp active feature nat64 datapath statistics"],
+                answer: "show nat64 translations",
+                explanation: "`show nat64 translations` 命令用於顯示 NAT64 (IPv6 到 IPv4 的網路位址和協定轉換) 的活動轉換條目。"
+            },
+            {
+                question: "PPPoE (Point-to-Point Protocol over Ethernet) 的主要用途是什麼？",
+                options: ["在乙太網路上建立 PPP 會話，常用於 DSL 連接", "加密乙太網路訊框", "在乙太網路上進行路由選擇", "壓縮乙太網路標頭"],
+                answer: "在乙太網路上建立 PPP 會話，常用於 DSL 連接",
+                explanation: "PPPoE 允許在乙太網路鏈路上封裝 PPP 訊框，從而可以利用 PPP 的特性 (如身份驗證、IP 位址分配) 來管理寬頻用戶的連接，常見於 DSL 和一些光纖接入服務。"
+            },
+            {
+                question: "在 QoS (Quality of Service) 中，哪種機制用於根據流量的分類來提供不同的處理優先級？",
+                options: ["佇列 (Queuing)", "整形 (Shaping)", "策略 (Policing)", "分類與標記 (Classification and Marking)"],
+                answer: "分類與標記 (Classification and Marking)",
+                explanation: "分類是識別不同類型流量的過程，而標記是在封包標頭中設定特定值 (如 DSCP 或 CoS) 以指示其優先級。後續的 QoS 機制 (如佇列、整形) 會根據這些標記來處理流量。"
+            },
+            {
+                question: "哪一個命令用於在 Cisco 交換器上設定 DAI (Dynamic ARP Inspection) 在 VLAN 10 上？",
+                options: ["ip arp inspection vlan 10", "ip dhcp snooping vlan 10 -> ip arp inspection trust", "interface Vlan10 -> ip arp inspection enable", "arp access-list DAI_VLAN10"],
+                answer: "ip arp inspection vlan 10",
+                explanation: "在全域配置模式下，使用 `ip arp inspection vlan 10` 命令可以為 VLAN 10 啟用 DAI。DAI 通常與 DHCP Snooping 結合使用，以驗證 ARP 封包的有效性。"
+            },
+            {
+                question: "在 EIGRP for IPv6 中，哪一個命令用於在介面上啟用 EIGRP？",
+                options: ["ipv6 router eigrp [as-number]", "interface [type/number] -> ipv6 eigrp [as-number]", "network [ipv6-prefix]/[length]", "ipv6 eigrp [as-number] enable"],
+                answer: "interface [type/number] -> ipv6 eigrp [as-number]",
+                explanation: "與 IPv4 EIGRP 不同，IPv6 EIGRP 是直接在介面配置模式下使用 `ipv6 eigrp [AS號碼]` 命令啟用的，而不是使用 `network` 命令。"
+            },
+            {
+                question: "什麼是「SaltStack」？",
+                options: ["一種網路監控工具", "一種基於 Python 的開源配置管理和遠端執行工具", "一種 SDN 控制器", "一種網路模擬器"],
+                answer: "一種基於 Python 的開源配置管理和遠端執行工具",
+                explanation: "SaltStack (或 Salt) 是一個功能強大的 IT 自動化和配置管理工具，它使用主控端/代理端 (Master/Minion) 架構，可以快速地在大量伺服器上執行命令和管理狀態。"
+            },
+            {
+                question: "在 Cisco IOS 中，`err-disabled` 狀態表示什麼？",
+                options: ["介面正常運作但沒有流量", "介面由於軟體錯誤而被禁用", "介面由於檢測到錯誤情況 (如 BPDU Guard 違規、Port Security 違規) 而被系統自動關閉", "介面正在等待 STP 收斂"],
+                answer: "介面由於檢測到錯誤情況 (如 BPDU Guard 違規、Port Security 違規) 而被系統自動關閉",
+                explanation: "當交換器埠由於某些安全或協定違規而被置於 err-disabled 狀態時，該埠會被關閉以保護網路。管理員需要手動干預 (或配置自動恢復) 才能重新啟用該埠。"
+            },
+            {
+                question: "哪一個命令用於在 Cisco 路由器上查看 OSPFv3 (IPv6 OSPF) 的鄰居資訊？",
+                options: ["show ip ospf neighbor", "show ipv6 ospf neighbor", "show ospfv3 neighbor", "show ipv6 protocols neighbor"],
+                answer: "show ipv6 ospf neighbor",
+                explanation: "`show ipv6 ospf neighbor` 命令用於顯示 OSPFv3 (OSPF for IPv6) 的鄰居列表及其狀態。"
+            },
+            {
+                question: "IP Source Guard (IPSG) 是一種什麼安全功能？",
+                options: ["防止 IP 位址欺騙，通過過濾進入交換器埠的流量，確保來源 IP 和 MAC 位址與 DHCP Snooping 綁定表或靜態配置匹配", "加密 IP 流量", "檢測網路入侵", "限制每個埠的 MAC 位址數量"],
+                answer: "防止 IP 位址欺騙，通過過濾進入交換器埠的流量，確保來源 IP 和 MAC 位址與 DHCP Snooping 綁定表或靜態配置匹配",
+                explanation: "IPSG 幫助防止惡意使用者通過偽造其 IP 位址或 MAC 位址來冒充合法使用者。它通常與 DHCP Snooping 結合使用。"
+            },
+            {
+                question: "在 YANG (Yet Another Next Generation) 資料模型語言中，`leaf` 節點代表什麼？",
+                options: ["一個包含其他節點的容器節點", "一個包含單一值的簡單資料節點", "一個列表中的條目", "一個可選的資料節點"],
+                answer: "一個包含單一值的簡單資料節點",
+                explanation: "在 YANG 模型中，`leaf` 節點用於定義一個沒有子節點的資料項，它包含一個特定類型的值 (如字串、整數、布林值等)。"
+            },
+            {
+                question: "哪一個命令用於在 Cisco 交換器上設定埠的 Port Security 違規模式為 `shutdown`？",
+                options: ["switchport port-security violation restrict", "switchport port-security violation protect", "switchport port-security violation shutdown", "switchport port-security mac-address sticky"],
+                answer: "switchport port-security violation shutdown",
+                explanation: "當 Port Security 違規模式設定為 `shutdown` (預設模式) 時，如果發生安全違規 (如超過最大 MAC 位址數或學習到不允許的 MAC 位址)，該埠會進入 err-disabled 狀態。"
+            },
+            {
+                question: "IPv6 Neighbor Discovery Protocol (NDP) 中的 Router Solicitation (RS) 訊息的目的是什麼？",
+                options: ["路由器宣告其存在和鏈路參數", "主機請求路由器立即發送 Router Advertisement (RA) 訊息", "主機解析 IPv6 位址到 MAC 位址", "路由器重定向流量到更優的下一跳"],
+                answer: "主機請求路由器立即發送 Router Advertisement (RA) 訊息",
+                explanation: "當 IPv6 主機啟動或連接到網路時，它可以發送 RS 訊息來提示本地路由器立即發送 RA 訊息，而不是等待下一個定期的 RA。"
+            },
+            {
+                question: "在 Cisco DNA Center Assurance 中，「網路健康狀況評分 (Network Health Score)」主要基於哪些因素？",
+                options: ["僅網路設備的 CPU 和記憶體使用率", "網路設備的連線性、效能和問題數量", "僅網路流量大小", "網路設備的物理位置"],
+                answer: "網路設備的連線性、效能和問題數量",
+                explanation: "網路健康狀況評分是一個綜合指標，反映了網路中設備、用戶端和應用程式的整體狀態，通常考慮連線性、效能指標 (如延遲、抖動、丟包率) 以及檢測到的問題或異常。"
+            },
+            {
+                question: "哪一個命令用於在 Cisco IOS 路由器上配置一個擴展命名 IP ACL？",
+                options: ["access-list extended [name]", "ip access-list extended [name]", "named-acl extended [name]", "acl extended [name]"],
+                answer: "ip access-list extended [name]",
+                explanation: "使用 `ip access-list extended [ACL名稱]` 命令可以進入命名擴展 ACL 的配置模式，然後可以添加 permit 或 deny 語句。"
+            },
+            {
+                question: "在無線網路中，802.11ac 標準主要在哪個頻段運作？",
+                options: ["2.4 GHz", "5 GHz", "900 MHz", "6 GHz"],
+                answer: "5 GHz",
+                explanation: "IEEE 802.11ac (Wi-Fi 5) 主要在 5 GHz 頻段運作，提供比 802.11n 更高的吞吐量和更寬的頻道。"
+            },
+            {
+                question: "EIGRP 的 Feasible Successor (FS) 必須滿足什麼條件？",
+                options: ["其通告距離 (AD) 必須小於當前後繼路由器的可行距離 (FD)", "其通告距離 (AD) 必須大於當前後繼路由器的可行距離 (FD)", "其總成本必須與後繼路由器相同", "它必須是距離向量協定"],
+                answer: "其通告距離 (AD) 必須小於當前後繼路由器的可行距離 (FD)",
+                explanation: "這是 EIGRP 的可行性條件 (Feasibility Condition)，用於確保備援路徑 (FS) 是無迴圈的。如果鄰居通告的到達目標的距離 (AD/RD) 小於本地路由器當前到達該目標的最佳距離 (FD)，則該鄰居可以成為 FS。"
+            },
+            {
+                question: "哪一個命令用於在 Cisco 交換器上查看 DTP (Dynamic Trunking Protocol) 的介面狀態？",
+                options: ["show interfaces trunk", "show interfaces dtp", "show dtp interface [interface-id]", "show vlan brief"],
+                answer: "show interfaces trunk", // 雖然沒有直接的 show dtp interface, show int trunk 會顯示協商狀態
+                explanation: "`show interfaces trunk` 命令會顯示哪些埠是中繼埠，以及它們的封裝類型和 DTP 協商狀態 (例如 desirable, auto, on)。更詳細的 DTP 資訊可能需要 `show dtp interface [id]` (如果支援) 或結合其他 `show interface` 命令。"
+            },
+            {
+                question: "在 OSPF 中，LSA Type 1 (Router LSA) 包含哪些資訊？",
+                options: ["描述 ASBR 的位置", "描述區域內所有路由器的鏈路狀態和成本", "描述多重存取網路上的 DR 和連接的路由器", "描述區域間的摘要路由"],
+                answer: "描述區域內所有路由器的鏈路狀態和成本",
+                explanation: "每個 OSPF 路由器都會為其所在的每個區域產生一個 LSA Type 1，其中描述了該路由器在該區域內的所有鏈路 (介面)、鏈路的狀態、鏈路的成本以及連接到的鄰居 (如果有的話)。"
+            },
+            {
+                question: "什麼是「Zero Trust」安全模型的核心原則？",
+                options: ["信任內部網路的所有使用者和設備", "從不信任，始終驗證 (Never trust, always verify)", "僅在網路邊界實施安全控制", "僅加密敏感資料"],
+                answer: "從不信任，始終驗證 (Never trust, always verify)",
+                explanation: "Zero Trust 模型假設網路內部和外部都存在威脅，因此它要求對所有試圖存取資源的使用者、設備和應用程式進行嚴格的身份驗證和授權，無論其位置如何。"
+            },
+            {
+                question: "在 Cisco IOS XE 設備上，哪一個命令用於安裝和啟動一個新的軟體映像檔？",
+                options: ["copy tftp: flash:", "install add file [image-url] activate commit", "boot system flash [image-name]", "software install file [image-url] on-reboot"],
+                answer: "install add file [image-url] activate commit",
+                explanation: "Cisco IOS XE 引入了新的軟體安裝和升級流程。`install add file [url] activate commit` 是一個常見的命令序列，用於添加新的映像檔、將其設定為下次啟動時啟動，並提交更改。具體命令可能因平台和版本略有不同。"
+            },
+            {
+                question: "IPv6 中的 NDP Neighbor Solicitation (NS) 訊息的用途是什麼？",
+                options: ["路由器宣告其存在", "主機解析 IPv6 位址到鏈路層位址 (MAC)，或檢查鄰居是否可達", "主機請求網路前置詞", "路由器通告鏈路參數"],
+                answer: "主機解析 IPv6 位址到鏈路層位址 (MAC)，或檢查鄰居是否可達",
+                explanation: "NS 訊息用於位址解析 (類似 IPv4 的 ARP Request) 和鄰居不可達檢測 (NUD)。當主機需要知道目標 IPv6 位址對應的 MAC 位址時，或想確認鄰居是否仍然可達時，會發送 NS 訊息。"
+            },
+            {
+                question: "哪一個 BGP 路徑屬性 (Path Attribute) 用於防止路由迴圈，並包含路由經過的 AS 編號列表？",
+                options: ["AS_PATH", "NEXT_HOP", "LOCAL_PREF", "MED (Multi-Exit Discriminator)"],
+                answer: "AS_PATH",
+                explanation: "AS_PATH 是一個強制性的 BGP 屬性，它記錄了路由更新所經過的自治系統 (AS) 的序列。如果路由器在收到的路由更新的 AS_PATH 中看到自己的 AS 編號，則會丟棄該更新以防止迴圈。"
+            },
+            {
+                question: "在 Cisco 交換器上，`switchport nonegotiate` 命令的作用是什麼？",
+                options: ["強制介面進入中繼模式", "強制介面進入存取模式", "禁用介面上的 DTP (Dynamic Trunking Protocol) 協商", "啟用介面上的 LACP 協商"],
+                answer: "禁用介面上的 DTP (Dynamic Trunking Protocol) 協商",
+                explanation: "當介面被手動配置為中繼模式 (`switchport mode trunk`) 或存取模式 (`switchport mode access`) 後，使用 `switchport nonegotiate` 命令可以禁用 DTP，防止該介面發送或處理 DTP 訊框。這通常是安全最佳實踐。"
+            },
+            {
+                question: "QoS 中的「抖動 (Jitter)」是指什麼？",
+                options: ["封包的平均延遲", "封包延遲的變化量", "網路的總頻寬", "封包丟失的百分比"],
+                answer: "封包延遲的變化量",
+                explanation: "抖動是指網路中連續封包到達時間的變化。高抖動會對實時應用 (如 VoIP 和視訊會議) 的品質產生負面影響。"
+            },
+            {
+                question: "哪一個命令用於在 Cisco IOS 路由器上查看 DHCPv6 伺服器的綁定資訊？",
+                options: ["show ip dhcp binding", "show ipv6 dhcp binding", "show dhcpv6 binding", "show ipv6 dhcp pool"],
+                answer: "show ipv6 dhcp binding",
+                explanation: "`show ipv6 dhcp binding` 命令用於顯示 DHCPv6 伺服器分配給客戶端的 IPv6 位址、DUID 和租用時間等綁定資訊。"
+            },
+            {
+                question: "在網路安全中，什麼是「中間人攻擊 (Man-in-the-Middle Attack)」？",
+                options: ["攻擊者發送大量流量使服務不可用", "攻擊者竊聽兩方之間的通訊，並可能修改訊息", "攻擊者嘗試猜測使用者密碼", "攻擊者利用軟體漏洞獲得未授權存取"],
+                answer: "攻擊者竊聽兩方之間的通訊，並可能修改訊息",
+                explanation: "中間人攻擊是指攻擊者秘密地在兩個通訊方之間中繼和可能篡改他們的通訊。攻擊者會讓通訊雙方都認為他們是直接與對方通訊。"
+            },
+            {
+                question: "哪一個 OSPF LSA 類型用於在 NSSA 區域內通告外部路由？",
+                options: ["Type 1 (Router LSA)", "Type 3 (Summary LSA)", "Type 5 (AS External LSA)", "Type 7 (NSSA External LSA)"],
+                answer: "Type 7 (NSSA External LSA)",
+                explanation: "當外部路由被重分佈到 NSSA (Not-So-Stubby Area) 時，ASBR 會產生 LSA Type 7 來在 NSSA 內部通告這些路由。當這些 LSA 到達 NSSA 的 ABR 時，ABR 可能會將其轉換為 LSA Type 5 並傳播到 OSPF 骨幹。"
+            },
+            {
+                question: "Cisco Express Forwarding (CEF) 是什麼？",
+                options: ["一種路由協定", "一種先進的第三層交換技術，通過預先計算轉發資訊庫 (FIB) 和鄰接關係表來優化封包轉發效能", "一種安全功能", "一種無線傳輸技術"],
+                answer: "一種先進的第三層交換技術，通過預先計算轉發資訊庫 (FIB) 和鄰接關係表來優化封包轉發效能",
+                explanation: "CEF 是 Cisco 路由器和多層交換器上的一種高效封包轉發機制。它將路由表資訊處理成 FIB (Forwarding Information Base) 和鄰接關係表，使得大部分封包可以在中斷層級快速轉發，而無需 CPU 介入。"
+            },
+            {
+                question: "在 Cisco IOS 中，配置暫存器值 `0x2102` (預設值) 表示設備下次啟動時會如何載入 IOS 和配置？",
+                options: ["從 ROMmon 啟動，忽略 NVRAM 配置", "從 Flash 中的第一個 IOS 映像檔啟動，並載入 NVRAM 中的 startup-config", "進入密碼恢復模式", "僅載入 IOS，不載入配置"],
+                answer: "從 Flash 中的第一個 IOS 映像檔啟動，並載入 NVRAM 中的 startup-config",
+                explanation: "配置暫存器值 `0x2102` 是 Cisco 設備的標準預設值，指示設備正常啟動：從 Flash 載入 IOS 映像檔，然後從 NVRAM 載入啟動配置文件 (startup-config)。`0x2142` 則會忽略 startup-config，常用於密碼恢復。"
             },
             // ... 請繼續依照此格式添加更多題目，直到總數達到200題 ...
         ];
@@ -918,7 +1278,7 @@
             questionsToDisplay.forEach((item, index) => {
                 // 為了在完整題庫中顯示原始題號，我們需要從 allQuestionsData 中找到它的索引
                 const originalIndex = allQuestionsData.findIndex(q => q.question === item.question && q.answer === item.answer);
-                const displayIndex = originalIndex !== -1 ? originalIndex + 1 : index + 1; // 如果找不到，則使用當前過濾列表的索引
+                const displayIndex = originalIndex !== -1 ? originalIndex + 1 : index + 1; 
 
                 const questionElement = `
                     <div class="bank-question-card">
