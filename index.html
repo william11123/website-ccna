@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cisco CCNA 互動測驗</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .quiz-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: #f9fafb; /* bg-gray-50 */
+            border-radius: 0.5rem; /* rounded-lg */
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); /* shadow-md */
+        }
+        .question-card {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1); /* shadow-sm */
+        }
+        .option-label {
+            display: block;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            border: 1px solid #e5e7eb; /* border-gray-200 */
+            border-radius: 0.375rem; /* rounded-md */
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+        }
+        .option-label:hover {
+            background-color: #f3f4f6; /* bg-gray-100 */
+        }
+        .option-input:checked + .option-label {
+            background-color: #bfdbfe; /* bg-blue-200 */
+            border-color: #3b82f6; /* border-blue-500 */
+        }
+        .explanation {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #eef2ff; /* bg-indigo-50 */
+            border-left: 4px solid #6366f1; /* border-indigo-500 */
+            border-radius: 0.25rem; /* rounded-sm */
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.375rem; /* rounded-md */
+            font-weight: 600; /* font-semibold */
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+        }
+        .btn-primary {
+            background-color: #3b82f6; /* bg-blue-500 */
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #2563eb; /* bg-blue-600 */
+        }
+        .btn-secondary {
+            background-color: #6b7280; /* bg-gray-500 */
+            color: white;
+        }
+        .btn-secondary:hover {
+            background-color: #4b5563; /* bg-gray-600 */
+        }
+        .results-summary {
+            padding: 1.5rem;
+            background-color: #d1fae5; /* bg-green-100 */
+            border: 1px solid #6ee7b7; /* border-green-300 */
+            border-radius: 0.5rem; /* rounded-lg */
+            margin-bottom: 1.5rem;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="quiz-container">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">Cisco CCNA 互動測驗</h1>
+            <p class="text-gray-600">測試您的 CCNA 知識！</p>
+        </header>
+
+        <div id="quiz-area">
+            </div>
+
+        <div id="navigation-buttons" class="mt-6 flex justify-between">
+            <button id="prev-btn" class="btn btn-secondary hidden">上一題</button>
+            <button id="next-btn" class="btn btn-primary">下一題</button>
+            <button id="submit-btn" class="btn btn-primary hidden">提交答案</button>
+        </div>
+
+        <div id="results-area" class="hidden mt-8">
+            <h2 class="text-2xl font-semibold text-gray-700 mb-4">測驗結果</h2>
+            <div class="results-summary">
+                <p>總題數：<span id="total-questions"></span></p>
+                <p>答對題數：<span id="correct-answers"></span></p>
+                <p>答錯題數：<span id="incorrect-answers"></span></p>
+                <p>您的得分：<span id="score"></span>%</p>
+            </div>
+            <button id="show-explanations-btn" class="btn btn-primary mt-4">查看答案與詳解</button>
+        </div>
+
+        <div id="explanations-area" class="hidden mt-8">
+            <h2 class="text-2xl font-semibold text-gray-700 mb-4">答案與詳解</h2>
+            </div>
+    </div>
+
+    <script>
+        // CCNA 測驗題目資料
+        const quizData = [
+            {
+                question: "哪一個協定主要用於將 IP 位址解析為 MAC 位址？",
+                options: ["DNS", "ARP", "DHCP", "ICMP"],
+                answer: "ARP",
+                explanation: "ARP (Address Resolution Protocol) 用於在本地網路上將 IP 位址解析為對應的 MAC 位址。DNS 用於域名解析，DHCP 用於動態分配 IP 位址，ICMP 用於網路診斷。"
+            },
+            {
+                question: "OSI 模型中的哪一層負責資料的路由選擇？",
+                options: ["實體層 (Physical Layer)", "資料連結層 (Data Link Layer)", "網路層 (Network Layer)", "傳輸層 (Transport Layer)"],
+                answer: "網路層 (Network Layer)",
+                explanation: "網路層 (OSI Layer 3) 負責邏輯定址 (如 IP 位址) 和路由選擇，決定資料封包在網路中的最佳路徑。"
+            },
+            {
+                question: "IPv4 位址 192.168.1.10 屬於哪一類私有 IP 位址範圍？",
+                options: ["Class A", "Class B", "Class C", "Class D"],
+                answer: "Class C",
+                explanation: "Class C 的私有 IP 位址範圍是 192.168.0.0 到 192.168.255.255。192.168.1.10 在此範圍內。"
+            },
+            {
+                question: "哪種交換器轉發方法會在接收到完整訊框並檢查其 CRC 後才進行轉發？",
+                options: ["Cut-through", "Fragment-free", "Store-and-forward", "Fast-forward"],
+                answer: "Store-and-forward",
+                explanation: "Store-and-forward 交換方法會先將整個訊框儲存起來，檢查其 CRC (Cyclic Redundancy Check) 是否有錯誤，確認無誤後再轉發。這種方法可靠性高，但延遲較大。"
+            },
+            {
+                question: "VLAN 的主要目的是什麼？",
+                options: ["提高網路速度", "將一個實體網路分割成多個邏輯廣播域", "自動分配 IP 位址", "加密網路流量"],
+                answer: "將一個實體網路分割成多個邏輯廣播域",
+                explanation: "VLAN (Virtual Local Area Network) 允許網路管理員將一個實體交換器上的埠邏輯地分組到不同的廣播域中，從而提高網路安全性、靈活性並減少廣播風暴。"
+            }
+        ];
+
+        // DOM 元素
+        const quizArea = document.getElementById('quiz-area');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const resultsArea = document.getElementById('results-area');
+        const explanationsArea = document.getElementById('explanations-area');
+        const showExplanationsBtn = document.getElementById('show-explanations-btn');
+
+        // 測驗狀態變數
+        let currentQuestionIndex = 0;
+        let userAnswers = new Array(quizData.length).fill(null);
+
+        // 載入題目函式
+        function loadQuestion(index) {
+            const questionData = quizData[index];
+            quizArea.innerHTML = `
+                <div class="question-card">
+                    <h3 class="text-xl font-semibold mb-4">題目 ${index + 1}/${quizData.length}</h3>
+                    <p class="text-gray-700 mb-6">${questionData.question}</p>
+                    <div class="options">
+                        ${questionData.options.map((option, i) => `
+                            <div>
+                                <input type="radio" id="option-${index}-${i}" name="question-${index}" value="${option}" class="option-input hidden" ${userAnswers[index] === option ? 'checked' : ''}>
+                                <label for="option-${index}-${i}" class="option-label">${String.fromCharCode(65 + i)}. ${option}</label>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            // 為選項新增事件監聽器
+            const optionInputs = quizArea.querySelectorAll(`.option-input`);
+            optionInputs.forEach(input => {
+                input.addEventListener('change', () => {
+                    userAnswers[index] = input.value;
+                });
+            });
+
+            updateNavigationButtons();
+        }
+
+        // 更新導覽按鈕狀態
+        function updateNavigationButtons() {
+            prevBtn.classList.toggle('hidden', currentQuestionIndex === 0);
+            nextBtn.classList.toggle('hidden', currentQuestionIndex === quizData.length - 1);
+            submitBtn.classList.toggle('hidden', currentQuestionIndex !== quizData.length - 1);
+        }
+
+        // 處理下一題
+        nextBtn.addEventListener('click', () => {
+            if (currentQuestionIndex < quizData.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion(currentQuestionIndex);
+            }
+        });
+
+        // 處理上一題
+        prevBtn.addEventListener('click', () => {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion(currentQuestionIndex);
+            }
+        });
+
+        // 提交答案並顯示結果
+        submitBtn.addEventListener('click', () => {
+            // 確保最後一題的答案被記錄
+            const lastQuestionOptions = quizArea.querySelectorAll(`input[name="question-${currentQuestionIndex}"]:checked`);
+            if (lastQuestionOptions.length > 0) {
+                userAnswers[currentQuestionIndex] = lastQuestionOptions[0].value;
+            }
+            
+            let correctCount = 0;
+            userAnswers.forEach((answer, index) => {
+                if (answer === quizData[index].answer) {
+                    correctCount++;
+                }
+            });
+
+            const totalCount = quizData.length;
+            const incorrectCount = totalCount - correctCount;
+            const score = (correctCount / totalCount) * 100;
+
+            document.getElementById('total-questions').textContent = totalCount;
+            document.getElementById('correct-answers').textContent = correctCount;
+            document.getElementById('incorrect-answers').textContent = incorrectCount;
+            document.getElementById('score').textContent = score.toFixed(2);
+
+            quizArea.classList.add('hidden');
+            document.getElementById('navigation-buttons').classList.add('hidden');
+            resultsArea.classList.remove('hidden');
+            loadExplanations(); // 預先載入詳解內容
+        });
+
+        // 載入答案詳解
+        function loadExplanations() {
+            explanationsArea.innerHTML = ''; // 清空之前的詳解
+            quizData.forEach((item, index) => {
+                const userAnswer = userAnswers[index];
+                const isCorrect = userAnswer === item.answer;
+                const explanationCard = `
+                    <div class="question-card">
+                        <h4 class="text-lg font-semibold mb-2">題目 ${index + 1}: ${item.question}</h4>
+                        <p class="mb-1">您的答案：<span class="${isCorrect ? 'text-green-600 font-semibold' : 'text-red-600 font-semibold'}">${userAnswer || '未作答'}</span></p>
+                        <p class="mb-1">正確答案：<span class="text-green-600 font-semibold">${item.answer}</span></p>
+                        ${!isCorrect && userAnswer ? `<p class="text-red-500 mb-2">您的回答是錯誤的。</p>` : ''}
+                        ${isCorrect ? `<p class="text-green-500 mb-2">您的回答是正確的！</p>` : ''}
+                        <div class="explanation">
+                            <h5 class="font-semibold mb-1">詳解：</h5>
+                            <p class="text-gray-700">${item.explanation}</p>
+                        </div>
+                    </div>
+                `;
+                explanationsArea.innerHTML += explanationCard;
+            });
+        }
+        
+        // 顯示/隱藏答案詳解
+        showExplanationsBtn.addEventListener('click', () => {
+            explanationsArea.classList.toggle('hidden');
+            showExplanationsBtn.textContent = explanationsArea.classList.contains('hidden') ? '查看答案與詳解' : '隱藏答案與詳解';
+        });
+
+        // 初始化測驗
+        loadQuestion(currentQuestionIndex);
+    </script>
+</body>
+</html>
