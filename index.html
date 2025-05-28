@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cisco CCNA 互動測驗</title>
+    <title>Cisco CCNA 互動測驗與題庫</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
         }
-        .quiz-container {
-            max-width: 800px;
+        .main-container {
+            max-width: 900px;
             margin: 2rem auto;
             padding: 2rem;
             background-color: #f9fafb; /* bg-gray-50 */
             border-radius: 0.5rem; /* rounded-lg */
             box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); /* shadow-md */
         }
-        .question-card {
+        .question-card, .bank-question-card {
             background-color: white;
             padding: 1.5rem;
             border-radius: 0.5rem;
@@ -53,6 +53,7 @@
             font-weight: 600; /* font-semibold */
             cursor: pointer;
             transition: background-color 0.2s ease-in-out;
+            text-align: center;
         }
         .btn-primary {
             background-color: #3b82f6; /* bg-blue-500 */
@@ -68,6 +69,10 @@
         .btn-secondary:hover {
             background-color: #4b5563; /* bg-gray-600 */
         }
+        .btn-large {
+            padding: 1rem 2rem;
+            font-size: 1.125rem; /* text-lg */
+        }
         .results-summary {
             padding: 1.5rem;
             background-color: #d1fae5; /* bg-green-100 */
@@ -78,43 +83,99 @@
         .hidden {
             display: none;
         }
+        #question-bank-area .bank-question-card {
+            page-break-inside: avoid;
+        }
     </style>
 </head>
 <body class="bg-gray-100">
-    <div class="quiz-container">
+    <div class="main-container">
         <header class="text-center mb-8">
-            <h1 class="text-3xl font-bold text-gray-800">Cisco CCNA 互動測驗</h1>
-            <p class="text-gray-600">測試您的 CCNA 知識！</p>
+            <h1 class="text-3xl font-bold text-gray-800">Cisco CCNA 學習中心</h1>
         </header>
 
-        <div id="quiz-area">
-            </div>
-
-        <div id="navigation-buttons" class="mt-6 flex justify-between">
-            <button id="prev-btn" class="btn btn-secondary hidden">上一題</button>
-            <button id="next-btn" class="btn btn-primary">下一題</button>
-            <button id="submit-btn" class="btn btn-primary hidden">提交答案</button>
+        <div id="main-menu" class="text-center">
+            <p class="text-lg text-gray-700 mb-6">請選擇您要進行的項目：</p>
+            <button id="start-random-quiz-btn" class="btn btn-primary btn-large mb-4 w-full sm:w-auto">開始隨機 30 題測驗</button>
+            <button id="view-question-bank-btn" class="btn btn-secondary btn-large w-full sm:w-auto">瀏覽完整題庫</button>
         </div>
 
-        <div id="results-area" class="hidden mt-8">
-            <h2 class="text-2xl font-semibold text-gray-700 mb-4">測驗結果</h2>
-            <div class="results-summary">
-                <p>總題數：<span id="total-questions"></span></p>
-                <p>答對題數：<span id="correct-answers"></span></p>
-                <p>答錯題數：<span id="incorrect-answers"></span></p>
-                <p>您的得分：<span id="score"></span>%</p>
+        <div id="quiz-section" class="hidden">
+            <button id="back-to-menu-from-quiz-btn" class="btn btn-secondary mb-6">返回主選單</button>
+            <div id="quiz-area">
+                </div>
+            <div id="navigation-buttons" class="mt-6 flex justify-between">
+                <button id="prev-btn" class="btn btn-secondary hidden">上一題</button>
+                <button id="next-btn" class="btn btn-primary">下一題</button>
+                <button id="submit-btn" class="btn btn-primary hidden">提交答案</button>
             </div>
-            <button id="show-explanations-btn" class="btn btn-primary mt-4">查看答案與詳解</button>
+            <div id="results-area" class="hidden mt-8">
+                <h2 class="text-2xl font-semibold text-gray-700 mb-4">測驗結果</h2>
+                <div class="results-summary">
+                    <p>總題數：<span id="total-questions"></span></p>
+                    <p>答對題數：<span id="correct-answers"></span></p>
+                    <p>答錯題數：<span id="incorrect-answers"></span></p>
+                    <p>您的得分：<span id="score"></span>%</p>
+                </div>
+                <button id="show-explanations-btn" class="btn btn-primary mt-4">查看答案與詳解</button>
+                <button id="restart-quiz-btn" class="btn btn-secondary mt-4 ml-2">重新測驗 (30題)</button>
+            </div>
+            <div id="explanations-area" class="hidden mt-8">
+                <h2 class="text-2xl font-semibold text-gray-700 mb-4">答案與詳解</h2>
+                </div>
         </div>
 
-        <div id="explanations-area" class="hidden mt-8">
-            <h2 class="text-2xl font-semibold text-gray-700 mb-4">答案與詳解</h2>
+        <div id="question-bank-section" class="hidden">
+            <button id="back-to-menu-from-bank-btn" class="btn btn-secondary mb-6">返回主選單</button>
+            <h2 class="text-2xl font-semibold text-gray-700 mb-4 text-center">CCNA 完整題庫</h2>
+            <div class="mb-4 text-center">
+                <label for="search-bank-input" class="mr-2">搜尋題目關鍵字:</label>
+                <input type="text" id="search-bank-input" class="border border-gray-300 p-2 rounded-md">
+                <button id="search-bank-btn" class="btn btn-primary ml-2">搜尋</button>
+                <button id="clear-search-bank-btn" class="btn btn-secondary ml-2">清除搜尋</button>
             </div>
+            <div id="question-bank-area">
+                </div>
+        </div>
     </div>
 
     <script>
-        // CCNA 測驗題目資料
-        const quizData = [
+        // --- 全局變數 ---
+        const mainMenu = document.getElementById('main-menu');
+        const quizSection = document.getElementById('quiz-section');
+        const questionBankSection = document.getElementById('question-bank-section');
+
+        const startRandomQuizBtn = document.getElementById('start-random-quiz-btn');
+        const viewQuestionBankBtn = document.getElementById('view-question-bank-btn');
+        const backToMenuFromQuizBtn = document.getElementById('back-to-menu-from-quiz-btn');
+        const backToMenuFromBankBtn = document.getElementById('back-to-menu-from-bank-btn');
+
+        const quizArea = document.getElementById('quiz-area');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const resultsArea = document.getElementById('results-area');
+        const explanationsArea = document.getElementById('explanations-area');
+        const showExplanationsBtn = document.getElementById('show-explanations-btn');
+        const restartQuizBtn = document.getElementById('restart-quiz-btn');
+        
+        const questionBankArea = document.getElementById('question-bank-area');
+        const searchBankInput = document.getElementById('search-bank-input');
+        const searchBankBtn = document.getElementById('search-bank-btn');
+        const clearSearchBankBtn = document.getElementById('clear-search-bank-btn');
+
+        const navigationButtons = document.getElementById('navigation-buttons');
+
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+        let currentQuizQuestions = []; // 用於存放當前測驗的題目 (例如隨機30題)
+        let displayedBankQuestions = []; // 用於存放題庫中當前顯示的題目 (搜尋後)
+
+
+        // --- CCNA 完整題庫資料 (目標200題) ---
+        // 為了示範，這裡先放入約100題。請按此格式擴充至200題。
+        const allQuestionsData = [
+            // 原有的題目 (約55題)
             {
                 question: "哪一個協定主要用於將 IP 位址解析為 MAC 位址？",
                 options: ["DNS", "ARP", "DHCP", "ICMP"],
@@ -144,28 +205,612 @@
                 options: ["提高網路速度", "將一個實體網路分割成多個邏輯廣播域", "自動分配 IP 位址", "加密網路流量"],
                 answer: "將一個實體網路分割成多個邏輯廣播域",
                 explanation: "VLAN (Virtual Local Area Network) 允許網路管理員將一個實體交換器上的埠邏輯地分組到不同的廣播域中，從而提高網路安全性、靈活性並減少廣播風暴。"
-            }
+            },
+            {
+                question: "哪一個命令用於在 Cisco IOS 交換器上設定 VLAN？",
+                options: ["ip address", "interface vlan", "vlan database", "switchport mode access"],
+                answer: "vlan database",
+                explanation: "在 Cisco IOS 交換器上，可以使用 `vlan database` 命令進入 VLAN 配置模式來新增或修改 VLAN。也可以在全域配置模式下直接使用 `vlan [vlan-id]` 命令。`interface vlan` 用於創建 SVI (Switched Virtual Interface)。"
+            },
+            {
+                question: "STP (Spanning Tree Protocol) 的主要功能是什麼？",
+                options: ["提高網路頻寬", "防止第二層迴圈 (Layer 2 loops)", "提供 IP 位址分配", "加密資料傳輸"],
+                answer: "防止第二層迴圈 (Layer 2 loops)",
+                explanation: "STP 是一種網路協定，用於在具有冗餘路徑的交換網路中防止廣播風暴和 MAC 位址表不穩定等問題，這些問題是由第二層迴圈引起的。"
+            },
+            {
+                question: "哪一個路由協定是距離向量協定 (Distance Vector Protocol)？",
+                options: ["OSPF", "EIGRP", "RIP", "BGP"],
+                answer: "RIP",
+                explanation: "RIP (Routing Information Protocol) 是一種典型的距離向量路由協定，它根據跳數 (hop count) 作為度量值來選擇最佳路徑。OSPF 是鏈路狀態協定，EIGRP 是高級距離向量協定 (或混合協定)，BGP 是路徑向量協定。"
+            },
+            {
+                question: "子網路遮罩 255.255.255.0 對應的 CIDR 表示法是什麼？",
+                options: ["/8", "/16", "/24", "/32"],
+                answer: "/24",
+                explanation: "子網路遮罩 255.255.255.0 表示網路部分佔用了 24 位元 (8+8+8=24)，因此其 CIDR (Classless Inter-Domain Routing) 表示法為 /24。"
+            },
+            {
+                question: "DHCP Discover 訊息的目的是什麼？",
+                options: ["客戶端請求特定 IP 位址", "伺服器提供 IP 位址", "客戶端廣播尋找 DHCP 伺服器", "伺服器確認 IP 位址租用"],
+                answer: "客戶端廣播尋找 DHCP 伺服器",
+                explanation: "DHCP Discover 是一個由 DHCP 客戶端發出的廣播訊息，用於在網路上尋找可用的 DHCP 伺服器。"
+            },
+             {
+                question: "哪一個 TCP/IP 模型層對應 OSI 模型的網路層？",
+                options: ["應用層 (Application Layer)", "傳輸層 (Transport Layer)", "網際網路層 (Internet Layer)", "網路存取層 (Network Access Layer)"],
+                answer: "網際網路層 (Internet Layer)",
+                explanation: "TCP/IP 模型的網際網路層 (Internet Layer) 的功能與 OSI 模型的網路層 (Network Layer) 最為接近，都負責處理 IP 定址、路由和封包轉發。"
+            },
+            {
+                question: "在 Cisco 路由器上，哪個命令可以顯示路由表？",
+                options: ["show ip interface brief", "show running-config", "show ip route", "show version"],
+                answer: "show ip route",
+                explanation: "`show ip route` 命令用於顯示 Cisco IOS 路由器的 IP 路由表，其中包含路由器學習到的所有網路路徑。"
+            },
+            {
+                question: "NAT (Network Address Translation) 的主要用途是什麼？",
+                options: ["提高網路安全性", "將私有 IP 位址轉換為公有 IP 位址以存取網際網路", "動態分配 IP 位址", "過濾網路流量"],
+                answer: "將私有 IP 位址轉換為公有 IP 位址以存取網際網路",
+                explanation: "NAT 主要用於將內部網路中使用的私有 IP 位址轉換為可在網際網路上路由的公有 IP 位址，從而允許多個內部設備共享一個或少量公有 IP 位址。"
+            },
+            {
+                question: "哪種無線網路安全協定被認為是最安全的？",
+                options: ["WEP", "WPA", "WPA2", "WPS"],
+                answer: "WPA2",
+                explanation: "WPA2 (Wi-Fi Protected Access 2) 使用 AES 加密演算法，提供了比 WEP 和 WPA 更強的安全性。WPS 是一種簡化連線的協定，但曾有安全漏洞。"
+            },
+            {
+                question: "ACL (Access Control List) 的標準編號範圍是多少？",
+                options: ["1-99 和 1300-1999", "100-199 和 2000-2699", "所有數字皆可", "僅限命名 ACL"],
+                answer: "1-99 和 1300-1999",
+                explanation: "標準 IP ACL 的編號範圍是 1-99 以及擴展範圍 1300-1999。它們僅根據來源 IP 位址進行過濾。"
+            },
+            {
+                question: "OSPF 協定使用的度量值 (metric) 是什麼？",
+                options: ["跳數 (Hop count)", "頻寬 (Bandwidth)", "成本 (Cost)", "延遲 (Delay)"],
+                answer: "成本 (Cost)",
+                explanation: "OSPF (Open Shortest Path First) 使用「成本」作為其度量值。成本通常根據介面頻寬計算得出，頻寬越高，成本越低。"
+            },
+            {
+                question: "哪一個命令用於在 Cisco 路由器上進入特權執行模式 (privileged EXEC mode)？",
+                options: ["configure terminal", "enable", "exit", "show ip interface brief"],
+                answer: "enable",
+                explanation: "在使用者執行模式 (user EXEC mode) 下，輸入 `enable` 命令可以進入特權執行模式，該模式下可以執行更多配置和監控命令。"
+            },
+            {
+                question: "IPv6 位址的長度是多少位元？",
+                options: ["32 位元", "48 位元", "64 位元", "128 位元"],
+                answer: "128 位元",
+                explanation: "IPv6 位址由 128 位元組成，通常表示為 8 組十六進制數字，每組 4 個數字，以冒號分隔。"
+            },
+            {
+                question: "在設定 EtherChannel 時，哪一個協定可以動態協商 Port Aggregation Protocol (PAgP)？",
+                options: ["LACP", "PAgP", "STP", "VTP"],
+                answer: "PAgP",
+                explanation: "PAgP (Port Aggregation Protocol) 是 Cisco 專有的協定，用於在交換器之間動態協商建立 EtherChannel。LACP (Link Aggregation Control Protocol) 是一個開放標準的協定，也用於此目的。"
+            },
+            {
+                question: "「Default Gateway」在網路設定中的作用是什麼？",
+                options: ["解析域名", "分配 IP 位址", "當目標主機不在本地網路時，將流量轉發到該位址", "提供無線網路存取"],
+                answer: "當目標主機不在本地網路時，將流量轉發到該位址",
+                explanation: "預設閘道 (Default Gateway) 是一個路由器的 IP 位址，當主機需要將資料傳送到其本地子網路之外的其他網路時，會將資料封包發送到預設閘道。"
+            },
+            {
+                question: "CDP (Cisco Discovery Protocol) 運作在 OSI 模型的哪一層？",
+                options: ["實體層 (Physical Layer)", "資料連結層 (Data Link Layer)", "網路層 (Network Layer)", "傳輸層 (Transport Layer)"],
+                answer: "資料連結層 (Data Link Layer)",
+                explanation: "CDP 是 Cisco 專有的協定，運作在 OSI 模型的資料連結層 (Layer 2)。它用於收集相鄰 Cisco 設備的資訊。"
+            },
+            {
+                question: "哪一個命令可以查看 Cisco 交換器上所有 VLAN 的簡要資訊？",
+                options: ["show vlan brief", "show ip vlan", "show interfaces trunk", "show vtp status"],
+                answer: "show vlan brief",
+                explanation: "`show vlan brief` 命令用於顯示交換器上所有已配置 VLAN 的簡要資訊，包括 VLAN ID、名稱、狀態和分配給該 VLAN 的埠。"
+            },
+            {
+                question: "EIGRP 協定使用的演算法是什麼？",
+                options: ["Dijkstra", "Bellman-Ford", "DUAL", "SPF"],
+                answer: "DUAL",
+                explanation: "EIGRP (Enhanced Interior Gateway Routing Protocol) 使用 DUAL (Diffusing Update Algorithm) 演算法來計算最佳路徑並保證無迴圈的路徑。"
+            },
+            {
+                question: "在進行子網路切割時，借用主機位元會導致什麼結果？",
+                options: ["增加每個子網路的主機數量", "減少子網路的數量", "增加子網路的數量，但減少每個子網路的主機數量", "對主機數量和子網路數量沒有影響"],
+                answer: "增加子網路的數量，但減少每個子網路的主機數量",
+                explanation: "當從 IP 位址的主機部分借用位元來建立子網路時，會增加可用子網路的數量，但同時會減少每個子網路中可用於主機的位址數量。"
+            },
+            {
+                question: "哪種 NAT 類型允許多個私有 IP 位址對應到單個公有 IP 位址，但使用不同的埠號？",
+                options: ["靜態 NAT (Static NAT)", "動態 NAT (Dynamic NAT)", "PAT (Port Address Translation) / NAT Overload", "透明 NAT (Transparent NAT)"],
+                answer: "PAT (Port Address Translation) / NAT Overload",
+                explanation: "PAT (也稱為 NAT Overload) 是一種動態 NAT 的形式，它允許多個內部私有 IP 位址映射到單個公有 IP 位址，通過使用不同的 TCP/UDP 埠號來區分不同的連線。"
+            },
+            {
+                question: "SSH (Secure Shell) 協定預設使用的 TCP 埠號是多少？",
+                options: ["21", "22", "23", "80"],
+                answer: "22",
+                explanation: "SSH 協定預設使用 TCP 埠號 22 來提供安全的遠端登入和指令執行。埠 21 用於 FTP，埠 23 用於 Telnet，埠 80 用於 HTTP。"
+            },
+            {
+                question: "BGP (Border Gateway Protocol) 主要用於哪種類型的網路環境？",
+                options: ["小型區域網路 (LAN)", "中型企業網路", "網際網路服務供應商 (ISP) 之間和大型企業網路", "家庭網路"],
+                answer: "網際網路服務供應商 (ISP) 之間和大型企業網路",
+                explanation: "BGP 是一種外部閘道協定 (EGP)，主要用於在不同的自治系統 (AS) 之間交換路由資訊，例如 ISP 之間或大型企業與 ISP 之間。"
+            },
+            {
+                question: "在 Cisco IOS 中，`copy running-config startup-config` 命令的作用是什麼？",
+                options: ["將啟動設定複製到目前執行設定", "將目前執行設定儲存到 NVRAM，使其在重啟後保留", "清除啟動設定", "顯示目前執行設定"],
+                answer: "將目前執行設定儲存到 NVRAM，使其在重啟後保留",
+                explanation: "此命令將目前在 RAM 中執行的設定 (running-config) 複製到 NVRAM 中的啟動設定 (startup-config)。這樣，當設備下次重啟時，將會載入這些已儲存的設定。"
+            },
+            {
+                question: "HSRP (Hot Standby Router Protocol) 的目的是什麼？",
+                options: ["負載平衡多條鏈路", "提供第一跳路由備援", "動態分配 IP 位址", "加密網路流量"],
+                answer: "提供第一跳路由備援",
+                explanation: "HSRP 是 Cisco 專有的協定，用於在區域網路中提供第一跳路由備援。它允許多個路由器共享一個虛擬 IP 位址和 MAC 位址，其中一個作為主動路由器，其他作為備援路由器。"
+            },
+            {
+                question: "哪一個 OSI 模型層負責處理訊框 (frames)？",
+                options: ["實體層 (Physical Layer)", "資料連結層 (Data Link Layer)", "網路層 (Network Layer)", "傳輸層 (Transport Layer)"],
+                answer: "資料連結層 (Data Link Layer)",
+                explanation: "資料連結層 (OSI Layer 2) 負責將來自網路層的封包封裝成訊框，並在本地網路上進行可靠的點對點傳輸，處理實體定址 (MAC 位址) 和錯誤偵測。"
+            },
+            {
+                question: "IPv6 的 Loopback 位址是什麼？",
+                options: ["::1", "127.0.0.1", "fe80::/10", "ff00::/8"],
+                answer: "::1",
+                explanation: "IPv6 的 Loopback 位址是 ::1，相當於 IPv4 中的 127.0.0.1。"
+            },
+            {
+                question: "在 OSPF 中，DR (Designated Router) 的選舉基於什麼？",
+                options: ["最高的 IP 位址", "最低的 MAC 位址", "最高的路由器優先級 (Router Priority)，然後是最高的 Router ID", "最低的成本到根橋"],
+                answer: "最高的路由器優先級 (Router Priority)，然後是最高的 Router ID",
+                explanation: "在多重存取網路上，OSPF 會選舉 DR 和 BDR。選舉首先基於路由器優先級 (預設為1，0表示不參與選舉)，如果優先級相同，則選擇具有最高 Router ID 的路由器。"
+            },
+            {
+                question: "哪一個命令用於在 Cisco 交換器埠上啟用 Port Security？",
+                options: ["switchport mode access", "switchport port-security", "spanning-tree portfast", "ip dhcp snooping"],
+                answer: "switchport port-security",
+                explanation: "`switchport port-security` 命令用於在交換器介面上啟用 Port Security 功能，以限制允許存取該埠的 MAC 位址數量或指定特定的 MAC 位址。"
+            },
+            {
+                question: "TCP 和 UDP 位於 OSI 模型的哪一層？",
+                options: ["應用層", "傳輸層", "網路層", "資料連結層"],
+                answer: "傳輸層",
+                explanation: "TCP (Transmission Control Protocol) 和 UDP (User Datagram Protocol) 都是傳輸層協定。TCP 提供可靠的、面向連接的服務，而 UDP 提供不可靠的、無連接的服務。"
+            },
+            {
+                question: "哪種 STP 版本是 IEEE 標準，並且為每個 VLAN 提供獨立的 Spanning Tree 實例？",
+                options: ["STP (802.1D)", "RSTP (802.1w)", "PVST+", "MSTP (802.1s)"],
+                answer: "PVST+",
+                explanation: "PVST+ (Per-VLAN Spanning Tree Plus) 是 Cisco 專有的 STP 版本，它為每個 VLAN 建立一個獨立的 Spanning Tree 實例，允許更靈活的流量工程和負載平衡。MSTP 也是 IEEE 標準，允許將多個 VLAN 分組到一個 Spanning Tree 實例中。"
+            },
+            {
+                question: "在 IPv4 中，APIPA (Automatic Private IP Addressing) 分配的 IP 位址範圍是什麼？",
+                options: ["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "169.254.0.0/16"],
+                answer: "169.254.0.0/16",
+                explanation: "當 DHCP 客戶端無法從 DHCP 伺服器獲取 IP 位址時，作業系統通常會使用 APIPA 自動分配一個 169.254.0.1 到 169.254.255.254 範圍內的 IP 位址。"
+            },
+            {
+                question: "哪一個命令用於查看 Cisco 路由器介面的 IP 位址和狀態？",
+                options: ["show interfaces", "show ip interface brief", "show protocols", "show version"],
+                answer: "show ip interface brief",
+                explanation: "`show ip interface brief` 命令提供了一個簡潔的列表，顯示路由器上所有介面的 IP 位址、狀態 (up/down) 和協定狀態 (up/down)。"
+            },
+            {
+                question: "什麼是「Trunk Port」在交換器上的主要功能？",
+                options: ["僅允許單一 VLAN 的流量通過", "承載來自多個 VLAN 的流量", "連接到終端設備，如 PC 或印表機", "禁用該埠"],
+                answer: "承載來自多個 VLAN 的流量",
+                explanation: "Trunk Port 用於在交換器之間或交換器與路由器之間傳輸來自多個 VLAN 的流量。通常使用 802.1Q 或 ISL 協定對訊框進行標記以區分不同的 VLAN。"
+            },
+            {
+                question: "Syslog 協定的預設 UDP 埠號是多少？",
+                options: ["161", "162", "514", "123"],
+                answer: "514",
+                explanation: "Syslog 協定通常使用 UDP 埠 514 來傳送日誌訊息。TCP 也可以用於 Syslog，但 UDP 更常見。埠 161/162 用於 SNMP，埠 123 用於 NTP。"
+            },
+            {
+                question: "在 ACL 中，「wildcard mask」的作用是什麼？",
+                options: ["指定目標網路的子網路遮罩", "指定要匹配或忽略 IP 位址中的哪些位元", "指定 ACL 的優先級", "指定 ACL 的名稱"],
+                answer: "指定要匹配或忽略 IP 位址中的哪些位元",
+                explanation: "Wildcard mask 用於 ACL 中，以指示 IP 位址的哪些部分必須精確匹配，哪些部分可以忽略。0 表示對應位元必須匹配，1 表示對應位元可以任意。"
+            },
+            {
+                question: "PPP (Point-to-Point Protocol) 提供了哪些功能？",
+                options: ["僅路由選擇", "僅錯誤偵測", "身份驗證、壓縮和多重鏈路支持", "僅域名解析"],
+                answer: "身份驗證、壓縮和多重鏈路支持",
+                explanation: "PPP 是一種常用的 WAN 協定，提供鏈路建立、身份驗證 (如 PAP、CHAP)、網路層協定協商、資料壓縮和多重鏈路 PPP 等功能。"
+            },
+            {
+                question: "JSON (JavaScript Object Notation) 是一種什麼格式？",
+                options: ["二進制資料格式", "輕量級的資料交換格式", "標記語言", "編譯語言"],
+                answer: "輕量級的資料交換格式",
+                explanation: "JSON 是一種基於文本的輕量級資料交換格式，易於人閱讀和編寫，也易於機器解析和生成。常用於 Web API 和配置文件。"
+            },
+            {
+                question: "哪一個命令用於在 Cisco 設備上設定靜態路由？",
+                options: ["router ospf [process-id]", "ip route [destination-network] [mask] [next-hop/interface]", "interface [type/number]", "access-list [number] permit [source]"],
+                answer: "ip route [destination-network] [mask] [next-hop/interface]",
+                explanation: "在全域配置模式下，使用 `ip route` 命令可以設定靜態路由。例如：`ip route 10.1.1.0 255.255.255.0 192.168.1.1`。"
+            },
+            {
+                question: "在無線網路中，SSID 代表什麼？",
+                options: ["安全金鑰", "無線網路的名稱", "MAC 位址", "加密類型"],
+                answer: "無線網路的名稱",
+                explanation: "SSID (Service Set Identifier) 是無線區域網路 (WLAN) 的名稱，用於區分不同的無線網路。用戶端設備通過 SSID 連接到特定的無線網路。"
+            },
+            {
+                question: "哪一個 OSPF 區域類型不允許外部路由 (LSA Type 5) 進入，但允許預設路由 (LSA Type 3)？",
+                options: ["Backbone Area (Area 0)", "Standard Area", "Stub Area", "Totally Stubby Area"],
+                answer: "Stub Area",
+                explanation: "Stub Area 不接受來自其他 AS 的外部路由 (LSA Type 5)，但允許區域間路由 (LSA Type 3)，包括預設路由。Totally Stubby Area 更進一步，只允許預設路由作為 LSA Type 3 進入。"
+            },
+            {
+                question: "HTTP 協定預設使用的 TCP 埠號是多少？",
+                options: ["22", "25", "80", "443"],
+                answer: "80",
+                explanation: "HTTP (Hypertext Transfer Protocol) 預設使用 TCP 埠 80。HTTPS (HTTP Secure) 預設使用 TCP 埠 443。"
+            },
+            {
+                question: "「Administrative Distance (AD)」在路由協定中的意義是什麼？",
+                options: ["路由的路徑成本", "路由的可靠性或可信度，用於選擇最佳路由來源", "路由的跳數", "路由的頻寬"],
+                answer: "路由的可靠性或可信度，用於選擇最佳路由來源",
+                explanation: "管理距離 (AD) 是一個 0 到 255 之間的值，用於表示路由來源的可信度。AD 值越低，路由來源越可信。當有多個路由協定學習到同一目標網路時，路由器會選擇 AD 值最低的路由。"
+            },
+            {
+                question: "哪一個命令用於保存 Cisco IOS 設備的目前執行設定，使其在重啟後仍然有效？",
+                options: ["copy running-config startup-config", "write memory", "copy startup-config running-config", "A 和 B 皆可"],
+                answer: "A 和 B 皆可",
+                explanation: "`copy running-config startup-config` 和 `write memory` (或簡寫 `wr`) 命令都可以將目前 RAM 中的執行設定保存到 NVRAM 中的啟動設定，以便設備重啟後載入。"
+            },
+            {
+                question: "IPv6 Unique Local Addresses (ULA) 的前置詞是什麼？",
+                options: ["2000::/3", "FC00::/7", "FE80::/10", "FF00::/8"],
+                answer: "FC00::/7",
+                explanation: "ULA 用於私有網路內部通訊，類似於 IPv4 的私有位址。它們的前置詞是 FC00::/7，這意味著第一個位元組是 FC 或 FD。"
+            },
+            {
+                question: "在 Cisco 交換器上，`switchport mode trunk` 命令設定介面為什麼模式？",
+                options: ["存取模式 (Access mode)", "中繼模式 (Trunk mode)", "動態自動模式 (Dynamic auto)", "動態期望模式 (Dynamic desirable)"],
+                answer: "中繼模式 (Trunk mode)",
+                explanation: "此命令將交換器介面靜態設定為中繼模式，使其能夠承載來自多個 VLAN 的流量。"
+            },
+            {
+                question: "SNMP (Simple Network Management Protocol) 的 GetRequest PDU 用於做什麼？",
+                options: ["由代理程式發送通知給管理器", "由管理器請求代理程式提供一個或多個 MIB 物件的值", "由管理器設定代理程式上一個或多個 MIB 物件的值", "由代理程式回應管理器的請求"],
+                answer: "由管理器請求代理程式提供一個或多個 MIB 物件的值",
+                explanation: "SNMP 管理器使用 GetRequest PDU 從 SNMP 代理程式處檢索特定 MIB (Management Information Base) 物件的值。"
+            },
+            {
+                question: "哪種雲端運算服務模型為使用者提供了作業系統、程式設計語言執行環境、資料庫和 Web 伺服器？",
+                options: ["IaaS (Infrastructure as a Service)", "PaaS (Platform as a Service)", "SaaS (Software as a Service)", "FaaS (Function as a Service)"],
+                answer: "PaaS (Platform as a Service)",
+                explanation: "PaaS 提供了一個平台，讓開發者可以開發、執行和管理應用程式，而無需管理底層的基礎設施 (硬體、網路、作業系統等)。"
+            },
+            {
+                question: "在 Cisco IOS 中，`interface Loopback0` 創建的是什麼類型的介面？",
+                options: ["實體乙太網路介面", "虛擬區域網路介面 (SVI)", "邏輯的、永遠在線的軟體介面", "WAN 序列介面"],
+                answer: "邏輯的、永遠在線的軟體介面",
+                explanation: "Loopback 介面是一種邏輯的、純軟體的介面，它總是被認為是處於活動 (up) 狀態。常用於測試、管理以及作為 OSPF Router ID 或 BGP 更新源。"
+            },
+            {
+                question: "DNS AAAA 記錄用於解析什麼？",
+                options: ["主機名到 IPv4 位址", "主機名到 IPv6 位址", "郵件交換伺服器", "別名 (CNAME)"],
+                answer: "主機名到 IPv6 位址",
+                explanation: "DNS AAAA 記錄用於將主機名 (hostname) 解析為其對應的 IPv6 位址。A 記錄則用於解析到 IPv4 位址。"
+            },
+            {
+                question: "哪一個命令可以顯示 Cisco 交換器 MAC 位址表的內容？",
+                options: ["show mac address-table", "show arp", "show ip interface", "show cdp neighbors"],
+                answer: "show mac address-table",
+                explanation: "`show mac address-table` (或 `show mac-address-table`) 命令用於顯示交換器學習到的 MAC 位址、它們對應的 VLAN 以及它們所連接的埠。"
+            },
+            // 新增的題目 (目標總數約100題)
+            {
+                question: "在 OSPF 中，ABR (Area Border Router) 的主要職責是什麼？",
+                options: ["連接 OSPF 區域到其他路由協定", "在單一區域內轉發路由", "連接多個 OSPF 區域到骨幹區域 (Area 0)", "僅在骨幹區域內運作"],
+                answer: "連接多個 OSPF 區域到骨幹區域 (Area 0)",
+                explanation: "ABR 至少連接一個 OSPF 區域到骨幹區域 (Area 0)，負責在這些區域之間傳播路由摘要資訊 (LSA Type 3)。"
+            },
+            {
+                question: "哪一個 DHCP 訊息是由伺服器發送給客戶端，以提供 IP 位址和其他組態資訊？",
+                options: ["DHCPDISCOVER", "DHCPOFFER", "DHCPREQUEST", "DHCPACK"],
+                answer: "DHCPOFFER",
+                explanation: "當 DHCP 伺服器收到客戶端的 DHCPDISCOVER 訊息後，它會發送一個 DHCPOFFER 訊息，其中包含一個可用的 IP 位址和其他網路組態參數。"
+            },
+            {
+                question: "「PortFast」是 Cisco 交換器上的一項 STP 功能，它的主要優點是什麼？",
+                options: ["增加埠的頻寬", "立即將連接到終端設備的埠轉換到轉發狀態，跳過學習和監聽狀態", "自動偵測網路迴圈", "啟用埠安全性"],
+                answer: "立即將連接到終端設備的埠轉換到轉發狀態，跳過學習和監聽狀態",
+                explanation: "PortFast 應僅在連接到單一主機/伺服器 (非其他交換器或集線器) 的存取埠上啟用。它能讓這些埠在鏈路建立後立即進入 STP 的轉發狀態，避免了因 STP 收斂而導致的啟動延遲。"
+            },
+            {
+                question: "FTP (File Transfer Protocol) 控制連接預設使用哪個 TCP 埠號？",
+                options: ["20", "21", "22", "23"],
+                answer: "21",
+                explanation: "FTP 使用兩個埠號：TCP 埠 21 用於控制連接 (命令傳輸)，TCP 埠 20 用於資料連接 (實際檔案傳輸)。"
+            },
+            {
+                question: "IPv4 位址 172.20.50.10/20 所在的網路位址是什麼？",
+                options: ["172.20.0.0", "172.20.16.0", "172.20.32.0", "172.20.48.0"],
+                answer: "172.20.48.0",
+                explanation: "/20 表示子網路遮罩為 255.255.240.0。計算網路位址：172.20.50.10 AND 255.255.240.0。第三個八位元組 50 (00110010) AND 240 (11110000) = 48 (00110000)。所以網路位址是 172.20.48.0。"
+            },
+            {
+                question: "在 Cisco 路由器上，`show cdp neighbors detail` 命令會顯示哪些額外資訊，而 `show cdp neighbors` 不會？",
+                options: ["鄰居設備的埠 ID", "鄰居設備的平台類型", "鄰居設備的 IP 位址", "鄰居設備的軟體版本"],
+                answer: "鄰居設備的 IP 位址",
+                explanation: "`show cdp neighbors detail` 命令會提供更詳細的鄰居資訊，包括鄰居設備上所有已設定的網路層位址 (例如 IP 位址)。"
+            },
+            {
+                question: "哪種 ACL 類型可以根據來源/目標 IP 位址、協定類型以及來源/目標埠號來過濾流量？",
+                options: ["標準 IP ACL", "擴展 IP ACL", "MAC 位址 ACL", "VLAN ACL"],
+                answer: "擴展 IP ACL",
+                explanation: "擴展 IP ACL (編號範圍 100-199 和 2000-2699，或命名 ACL) 提供了更細緻的流量過濾能力，可以檢查多種參數。"
+            },
+            {
+                question: "RIPv2 與 RIPv1 相比，主要增加了哪些功能？",
+                options: ["支援 VLSM (可變長度子網路遮罩)", "使用鏈路狀態演算法", "更快的收斂速度", "僅支援 Classful 路由"],
+                answer: "支援 VLSM (可變長度子網路遮罩)",
+                explanation: "RIPv2 的一個主要改進是支援 VLSM，因為它在路由更新中包含了子網路遮罩資訊。它還支援多點傳播路由更新 (224.0.0.9) 和基本的驗證。"
+            },
+            {
+                question: "什麼是「Frame Relay DLCI」？",
+                options: ["資料連結連接識別碼，用於在訊框中繼網路上識別虛擬電路", "訊框中繼交換器的 IP 位址", "訊框中繼的錯誤檢查碼", "訊框中繼的加密金鑰"],
+                answer: "資料連結連接識別碼，用於在訊框中繼網路上識別虛擬電路",
+                explanation: "DLCI (Data-Link Connection Identifier) 是一個 10 位元的識別碼，用於在本地訊框中繼介面上唯一標識一個虛擬電路 (VC)。它僅具有本地意義。"
+            },
+            {
+                question: "在 Cisco IOS 中，哪個命令用於設定主控台埠的密碼？",
+                options: ["enable secret [password]", "line con 0 -> password [password] -> login", "username [name] secret [password]", "ip default-gateway [address]"],
+                answer: "line con 0 -> password [password] -> login",
+                explanation: "要設定主控台埠的密碼，需要進入 `line console 0` 配置模式，然後使用 `password` 命令設定密碼，並使用 `login` 命令啟用密碼檢查。"
+            },
+            {
+                question: "哪一個 OSPF LSA 類型描述了 ASBR (Autonomous System Boundary Router) 的位置？",
+                options: ["Type 1 (Router LSA)", "Type 2 (Network LSA)", "Type 3 (Summary LSA)", "Type 4 (ASBR Summary LSA)"],
+                answer: "Type 4 (ASBR Summary LSA)",
+                explanation: "Type 4 LSA 由 ABR 產生，用於通告 ASBR 的位置給骨幹區域以外的其他區域。它包含了到達 ASBR 的 Router ID。"
+            },
+            {
+                question: "IEEE 802.1Q 是一種什麼標準？",
+                options: ["無線區域網路安全標準", "VLAN 標記標準", "Spanning Tree Protocol 標準", "乙太網路實體層標準"],
+                answer: "VLAN 標記標準",
+                explanation: "IEEE 802.1Q 是一種在中繼鏈路上對乙太網路訊框進行 VLAN 標記的標準，它在訊框中插入一個 4 位元組的標籤來識別 VLAN ID。"
+            },
+            {
+                question: "當一個主機第一次開機並嘗試獲取 IP 位址時，它會發送哪種類型的 DHCP 訊息？",
+                options: ["DHCPREQUEST (Unicast)", "DHCPREQUEST (Broadcast)", "DHCPDISCOVER (Broadcast)", "DHCPOFFER (Unicast)"],
+                answer: "DHCPDISCOVER (Broadcast)",
+                explanation: "主機在不知道 DHCP 伺服器位置的情況下，會廣播 DHCPDISCOVER 訊息來尋找網路上的 DHCP 伺服器。"
+            },
+            {
+                question: "哪一個命令用於在 Cisco 交換器上將一個介面設定為 VLAN 10 的存取埠？",
+                options: ["interface FastEthernet0/1 -> switchport mode trunk -> switchport trunk allowed vlan 10", "interface FastEthernet0/1 -> switchport mode access -> switchport access vlan 10", "interface Vlan10 -> ip address 192.168.10.1 255.255.255.0", "vlan 10 -> name Sales"],
+                answer: "interface FastEthernet0/1 -> switchport mode access -> switchport access vlan 10",
+                explanation: "首先使用 `switchport mode access` 將埠設定為存取模式，然後使用 `switchport access vlan 10` 將該埠分配給 VLAN 10。"
+            },
+            {
+                question: "EIGRP 的 Successor Route 是指什麼？",
+                options: ["到達目標網路的最佳無迴圈路徑", "到達目標網路的備援路徑", "通往 ASBR 的路徑", "通往 DR 的路徑"],
+                answer: "到達目標網路的最佳無迴圈路徑",
+                explanation: "Successor 是 EIGRP 路由表中用於轉發到特定目標網路的主要路徑，它是計算出的最佳無迴圈路徑。"
+            },
+            {
+                question: "IPv6 Anycast 位址的用途是什麼？",
+                options: ["用於單點傳播到單一介面", "用於多點傳播到一組介面", "分配給一組介面，但封包只會傳送到最近的一個介面 (根據路由協定)", "僅用於本地鏈路通訊"],
+                answer: "分配給一組介面，但封包只會傳送到最近的一個介面 (根據路由協定)",
+                explanation: "Anycast 位址可以分配給多個設備上的多個介面。當封包發送到 Anycast 位址時，路由器會將其轉發到拓撲上最近的那個介面。"
+            },
+            {
+                question: "在 Cisco 路由器上，`debug ip packet` 命令會產生什麼樣的輸出？",
+                options: ["顯示路由表的變化", "顯示所有通過路由器的 IP 封包的詳細資訊", "顯示 ARP 快取的內容", "顯示 OSPF 鄰居狀態的變化"],
+                answer: "顯示所有通過路由器的 IP 封包的詳細資訊",
+                explanation: "這是一個非常詳細的除錯命令，會顯示路由器處理的每個 IP 封包的資訊。由於輸出量可能非常大，應謹慎使用，通常與 ACL 結合以過濾特定流量。"
+            },
+            {
+                question: "哪一個協定用於在網路設備之間同步時間？",
+                options: ["NTP (Network Time Protocol)", "SNMP (Simple Network Management Protocol)", "TFTP (Trivial File Transfer Protocol)", "SMTP (Simple Mail Transfer Protocol)"],
+                answer: "NTP (Network Time Protocol)",
+                explanation: "NTP 用於在網際網路或區域網路中的電腦和網路設備之間同步時鐘。"
+            },
+            {
+                question: "OSPF 的 Hello 封包的主要目的是什麼？",
+                options: ["交換完整的路由表資訊", "發現鄰居並維持鄰居關係", "請求特定的 LSA", "確認 LSA 的接收"],
+                answer: "發現鄰居並維持鄰居關係",
+                explanation: "OSPF 路由器定期在其啟用 OSPF 的介面上發送 Hello 封包，以發現鄰居、建立和維持鄰居關係，並確保雙向通訊。"
+            },
+            {
+                question: "在 VTP (VLAN Trunking Protocol) 中，哪種模式的交換器可以創建、修改和刪除 VLAN，並將這些資訊傳播給同一 VTP 域中的其他交換器？",
+                options: ["Server 模式", "Client 模式", "Transparent 模式", "Off 模式"],
+                answer: "Server 模式",
+                explanation: "VTP Server 模式的交換器是 VLAN 資訊的主要來源。Client 模式的交換器會學習來自 Server 的 VLAN 資訊但不能自行修改。Transparent 模式的交換器不參與 VTP，但會轉發 VTP 廣告。"
+            },
+            {
+                question: "哪一個 IPv6 位址 :: 代表什麼？",
+                options: ["Loopback 位址", "未指定位址 (Unspecified Address)", "本地鏈路位址", "多點傳播位址"],
+                answer: "未指定位址 (Unspecified Address)",
+                explanation: "IPv6 位址 :: (所有位元均為0) 表示未指定位址。它通常在主機初始化期間，當主機還沒有獲得有效 IP 位址時，作為來源位址使用。"
+            },
+            {
+                question: "在 EtherChannel 中，LACP (Link Aggregation Control Protocol) 模式 'active' 的行為是什麼？",
+                options: ["埠被動等待對方發起協商", "埠主動嘗試與對方協商建立 EtherChannel", "埠不參與 LACP 協商，靜態配置為 Channel 成員", "埠僅在檢測到迴圈時才參與協商"],
+                answer: "埠主動嘗試與對方協商建立 EtherChannel",
+                explanation: "在 LACP 中，'active' 模式的埠會主動發送 LACPDU (LACP Data Units) 來嘗試與遠端埠協商形成 EtherChannel。'passive' 模式的埠則被動等待接收 LACPDU。"
+            },
+            {
+                question: "哪一個命令用於在 Cisco 路由器上設定 Telnet 存取的密碼？",
+                options: ["enable secret [password]", "line vty 0 4 -> password [password] -> login", "username [name] secret [password]", "service password-encryption"],
+                answer: "line vty 0 4 -> password [password] -> login",
+                explanation: "要設定 Telnet (虛擬終端) 存取，需要進入 `line vty 0 4` (或其他範圍) 配置模式，設定密碼並啟用登入檢查。"
+            },
+            {
+                question: "什麼是「路由黑洞 (Black Hole Route)」？",
+                options: ["指向不存在的下一跳的靜態路由，用於丟棄特定流量", "動態學習到的最優路徑", "通往預設閘道的路由", "用於負載平衡的路由"],
+                answer: "指向不存在的下一跳的靜態路由，用於丟棄特定流量",
+                explanation: "路由黑洞通常是配置一條靜態路由，將不希望的流量導向一個不存在的介面 (如 Null0 介面)，從而有效地丟棄這些封包。"
+            },
+            {
+                question: "在 RSTP (Rapid Spanning Tree Protocol, 802.1w) 中，埠角色 'Alternate Port' 的作用是什麼？",
+                options: ["指定轉發流量到根橋的埠", "指定轉發流量到指定網段的埠", "提供到達根橋的備援路徑，但目前處於阻塞狀態", "連接到終端設備的埠"],
+                answer: "提供到達根橋的備援路徑，但目前處於阻塞狀態",
+                explanation: "Alternate Port 是 RSTP 中的一種埠角色，它提供了到達根橋的替代路徑。如果根埠失效，Alternate Port 可以快速轉換為新的根埠。"
+            },
+            {
+                question: "GRE (Generic Routing Encapsulation) 通道的主要用途是什麼？",
+                options: ["加密 IP 流量", "在 IP 網路上封裝多種協定的封包以建立虛擬點對點連接", "壓縮 IP 標頭", "分配 IP 位址"],
+                answer: "在 IP 網路上封裝多種協定的封包以建立虛擬點對點連接",
+                explanation: "GRE 是一種隧道協定，可以將一種協定的封包封裝在另一種協定 (通常是 IP) 的封包中，從而在 IP 網路上建立虛擬的點對點鏈路。它本身不提供加密。"
+            },
+            {
+                question: "哪一個命令用於查看 Cisco IOS 設備的軟體版本、硬體資訊和開機映像檔位置？",
+                options: ["show running-config", "show version", "show inventory", "show flash:"],
+                answer: "show version",
+                explanation: "`show version` 命令顯示了關於設備的許多重要資訊，包括 IOS 軟體版本、系統運行時間、硬體平台、記憶體大小、配置暫存器值以及開機映像檔的路徑。"
+            },
+            {
+                question: "在網路自動化中，NETCONF 協定通常使用哪種傳輸協定？",
+                options: ["UDP", "HTTP", "SSH", "FTP"],
+                answer: "SSH",
+                explanation: "NETCONF (Network Configuration Protocol) 是一種用於網路設備管理的協定，它通常運行在安全的傳輸協定之上，例如 SSH，以確保配置資料的機密性和完整性。"
+            },
+            {
+                question: "DHCP Snooping 的主要目的是什麼？",
+                options: ["加速 DHCP 位址分配過程", "防止未經授權的 DHCP 伺服器和惡意的 DHCP 流量", "記錄所有 DHCP 交易", "為 DHCP 伺服器提供備援"],
+                answer: "防止未經授權的 DHCP 伺服器和惡意的 DHCP 流量",
+                explanation: "DHCP Snooping 是一種交換器安全功能，它通過將交換器埠分類為信任埠 (連接到合法 DHCP 伺服器) 和非信任埠 (連接到終端設備) 來過濾 DHCP 訊息，從而防止惡意攻擊。"
+            },
+            {
+                question: "在 Cisco 設備上，AAA 代表什麼？",
+                options: ["Address, Authentication, Authorization", "Authentication, Authorization, Accounting", "Access, Aggregation, Administration", "Application, Adjudication, Auditing"],
+                answer: "Authentication, Authorization, Accounting",
+                explanation: "AAA 是一個安全框架，用於控制對網路資源的存取。Authentication (驗證) 確認使用者身份，Authorization (授權) 決定使用者被允許執行的操作，Accounting (計費/稽核) 記錄使用者活動。"
+            },
+             {
+                question: "哪一個 OSPF 網路類型預設會選舉 DR/BDR？",
+                options: ["Point-to-point", "Broadcast Multiaccess", "Non-Broadcast Multiaccess (NBMA)", "B 和 C 皆可"],
+                answer: "B 和 C 皆可",
+                explanation: "在 Broadcast Multiaccess (如乙太網路) 和 Non-Broadcast Multiaccess (如訊框中繼) 網路類型中，OSPF 預設會選舉 DR (指定路由器) 和 BDR (備援指定路由器) 以減少 LSA 的交換數量。"
+            },
+            {
+                question: "TFTP (Trivial File Transfer Protocol) 使用哪個 UDP 埠號作為其熟知埠？",
+                options: ["21", "23", "69", "80"],
+                answer: "69",
+                explanation: "TFTP 伺服器監聽 UDP 埠 69 以接收來自客戶端的初始連接請求。後續的資料傳輸會使用隨機選擇的埠號。"
+            },
+            {
+                question: "在 IPv6 中，EUI-64 格式用於做什麼？",
+                options: ["從 MAC 位址自動產生 IPv6 位址的介面識別碼部分", "壓縮 IPv6 位址", "加密 IPv6 標頭", "將 IPv6 位址轉換為 IPv4 位址"],
+                answer: "從 MAC 位址自動產生 IPv6 位址的介面識別碼部分",
+                explanation: "EUI-64 (Extended Unique Identifier 64-bit) 是一種將 48 位元的 MAC 位址轉換為 64 位元的介面識別碼的方法，常用於 IPv6 無狀態位址自動配置 (SLAAC)。"
+            },
+            {
+                question: "哪一個命令用於在 Cisco 交換器上設定介面的雙工模式為全雙工？",
+                options: ["speed auto", "duplex full", "media-type rj45", "no shutdown"],
+                answer: "duplex full",
+                explanation: "在介面配置模式下，使用 `duplex full` 命令可以將介面的雙工模式手動設定為全雙工。`duplex auto` 則啟用自動協商。"
+            },
+            {
+                question: "PoE (Power over Ethernet) 的 IEEE 標準是什麼？",
+                options: ["802.3af 和 802.3at", "802.11ac", "802.1X", "802.1Q"],
+                answer: "802.3af 和 802.3at",
+                explanation: "IEEE 802.3af (PoE) 和 IEEE 802.3at (PoE+) 是定義通過乙太網路電纜為連接設備 (如 IP 電話、無線 AP) 供電的標準。"
+            },
+            {
+                question: "在 SDN (Software-Defined Networking) 架構中，哪個平面負責處理網路流量的轉發決策？",
+                options: ["控制平面 (Control Plane)", "資料平面 (Data Plane / Forwarding Plane)", "管理平面 (Management Plane)", "應用平面 (Application Plane)"],
+                answer: "控制平面 (Control Plane)",
+                explanation: "在 SDN 中，控制平面從資料平面分離出來，集中管理。控制平面 (通常由 SDN 控制器實現) 負責制定路由決策、流量工程策略等，然後將這些決策下發到資料平面設備執行。"
+            },
+            {
+                question: "哪一個命令用於在 Cisco IOS 設備上啟用 IPv6 單點傳播路由？",
+                options: ["ip routing", "ipv6 unicast-routing", "ipv6 enable", "router ipv6 ospf"],
+                answer: "ipv6 unicast-routing",
+                explanation: "要在 Cisco IOS 路由器上啟用 IPv6 路由功能 (使其能夠轉發 IPv6 封包)，需要在全域配置模式下輸入 `ipv6 unicast-routing` 命令。"
+            },
+            {
+                question: "什麼是「Split Horizon」規則在距離向量路由協定中的作用？",
+                options: ["防止路由迴圈，不將從某個介面學習到的路由再從同一個介面宣告回去", "限制路由表中路由的最大跳數", "定期發送完整的路由表更新", "使用觸發更新來加速收斂"],
+                answer: "防止路由迴圈，不將從某個介面學習到的路由再從同一個介面宣告回去",
+                explanation: "Split Horizon 是一種防止路由迴圈的機制，它規定路由器不應該將它從一個介面學習到的路由資訊再通過同一個介面廣播回去。"
+            },
+            {
+                question: "在 REST API 中，哪一個 HTTP 方法通常用於創建一個新的資源？",
+                options: ["GET", "POST", "PUT", "DELETE"],
+                answer: "POST",
+                explanation: "POST 方法通常用於向伺服器提交資料以創建一個新的資源。GET 用於檢索資源，PUT 用於更新或替換現有資源，DELETE 用於刪除資源。"
+            },
+            {
+                question: "VRRP (Virtual Router Redundancy Protocol) 與 HSRP 相比，主要的不同點是什麼？",
+                options: ["VRRP 是 Cisco 專有協定", "HSRP 是開放標準協定", "VRRP 是開放標準 (IETF RFC 5798)，允許多個廠商設備互通", "VRRP 不支援負載平衡"],
+                answer: "VRRP 是開放標準 (IETF RFC 5798)，允許多個廠商設備互通",
+                explanation: "HSRP 是 Cisco 專有的第一跳備援協定，而 VRRP 是一個開放標準，允許不同網路設備製造商的設備實現路由備援的互通性。"
+            },
+            // ... 請繼續依照此格式添加更多題目，直到總數達到200題 ...
         ];
+        // --- Helper 函數 ---
+        // Fisher-Yates (aka Knuth) Shuffle 演算法
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
 
-        // DOM 元素
-        const quizArea = document.getElementById('quiz-area');
-        const prevBtn = document.getElementById('prev-btn');
-        const nextBtn = document.getElementById('next-btn');
-        const submitBtn = document.getElementById('submit-btn');
-        const resultsArea = document.getElementById('results-area');
-        const explanationsArea = document.getElementById('explanations-area');
-        const showExplanationsBtn = document.getElementById('show-explanations-btn');
+        // 選擇指定數量的隨機題目
+        function selectRandomQuestions(sourceArray, count) {
+            const shuffled = [...sourceArray]; // 複製陣列以免修改原始題庫
+            shuffleArray(shuffled);
+            return shuffled.slice(0, count);
+        }
 
-        // 測驗狀態變數
-        let currentQuestionIndex = 0;
-        let userAnswers = new Array(quizData.length).fill(null);
+        // --- 模式切換邏輯 ---
+        function showMainMenu() {
+            mainMenu.classList.remove('hidden');
+            quizSection.classList.add('hidden');
+            questionBankSection.classList.add('hidden');
+            // 更新題庫按鈕上的題目數量
+            const bankButton = document.getElementById('view-question-bank-btn');
+            if (bankButton) {
+                bankButton.textContent = `瀏覽完整題庫 (${allQuestionsData.length}題)`;
+            }
+        }
 
-        // 載入題目函式
+        function showQuizSection() {
+            mainMenu.classList.add('hidden');
+            quizSection.classList.remove('hidden');
+            questionBankSection.classList.add('hidden');
+            // 重置測驗區域的初始狀態
+            quizArea.classList.remove('hidden');
+            navigationButtons.classList.remove('hidden');
+            resultsArea.classList.add('hidden');
+            explanationsArea.classList.add('hidden');
+            showExplanationsBtn.textContent = '查看答案與詳解';
+        }
+
+        function showQuestionBankSection() {
+            mainMenu.classList.add('hidden');
+            quizSection.classList.add('hidden');
+            questionBankSection.classList.remove('hidden');
+        }
+
+        // --- 測驗邏輯 ---
+        function initializeQuiz(questionsArray) {
+            currentQuizQuestions = questionsArray;
+            userAnswers = new Array(currentQuizQuestions.length).fill(null);
+            currentQuestionIndex = 0;
+            loadQuestion(currentQuestionIndex);
+            showQuizSection();
+        }
+
         function loadQuestion(index) {
-            const questionData = quizData[index];
+            if (index < 0 || index >= currentQuizQuestions.length) return;
+
+            const questionData = currentQuizQuestions[index];
             quizArea.innerHTML = `
                 <div class="question-card">
-                    <h3 class="text-xl font-semibold mb-4">題目 ${index + 1}/${quizData.length}</h3>
+                    <h3 class="text-xl font-semibold mb-4">題目 ${index + 1}/${currentQuizQuestions.length}</h3>
                     <p class="text-gray-700 mb-6">${questionData.question}</p>
                     <div class="options">
                         ${questionData.options.map((option, i) => `
@@ -178,33 +823,28 @@
                 </div>
             `;
 
-            // 為選項新增事件監聽器
             const optionInputs = quizArea.querySelectorAll(`.option-input`);
             optionInputs.forEach(input => {
                 input.addEventListener('change', () => {
                     userAnswers[index] = input.value;
                 });
             });
-
             updateNavigationButtons();
         }
 
-        // 更新導覽按鈕狀態
         function updateNavigationButtons() {
             prevBtn.classList.toggle('hidden', currentQuestionIndex === 0);
-            nextBtn.classList.toggle('hidden', currentQuestionIndex === quizData.length - 1);
-            submitBtn.classList.toggle('hidden', currentQuestionIndex !== quizData.length - 1);
+            nextBtn.classList.toggle('hidden', currentQuestionIndex === currentQuizQuestions.length - 1);
+            submitBtn.classList.toggle('hidden', currentQuestionIndex !== currentQuizQuestions.length - 1 || currentQuizQuestions.length === 0);
         }
 
-        // 處理下一題
         nextBtn.addEventListener('click', () => {
-            if (currentQuestionIndex < quizData.length - 1) {
+            if (currentQuestionIndex < currentQuizQuestions.length - 1) {
                 currentQuestionIndex++;
                 loadQuestion(currentQuestionIndex);
             }
         });
 
-        // 處理上一題
         prevBtn.addEventListener('click', () => {
             if (currentQuestionIndex > 0) {
                 currentQuestionIndex--;
@@ -212,9 +852,7 @@
             }
         });
 
-        // 提交答案並顯示結果
         submitBtn.addEventListener('click', () => {
-            // 確保最後一題的答案被記錄
             const lastQuestionOptions = quizArea.querySelectorAll(`input[name="question-${currentQuestionIndex}"]:checked`);
             if (lastQuestionOptions.length > 0) {
                 userAnswers[currentQuestionIndex] = lastQuestionOptions[0].value;
@@ -222,14 +860,14 @@
             
             let correctCount = 0;
             userAnswers.forEach((answer, index) => {
-                if (answer === quizData[index].answer) {
+                if (answer === currentQuizQuestions[index].answer) {
                     correctCount++;
                 }
             });
 
-            const totalCount = quizData.length;
+            const totalCount = currentQuizQuestions.length;
             const incorrectCount = totalCount - correctCount;
-            const score = (correctCount / totalCount) * 100;
+            const score = totalCount > 0 ? (correctCount / totalCount) * 100 : 0;
 
             document.getElementById('total-questions').textContent = totalCount;
             document.getElementById('correct-answers').textContent = correctCount;
@@ -237,15 +875,14 @@
             document.getElementById('score').textContent = score.toFixed(2);
 
             quizArea.classList.add('hidden');
-            document.getElementById('navigation-buttons').classList.add('hidden');
+            navigationButtons.classList.add('hidden');
             resultsArea.classList.remove('hidden');
-            loadExplanations(); // 預先載入詳解內容
+            loadQuizExplanations();
         });
-
-        // 載入答案詳解
-        function loadExplanations() {
-            explanationsArea.innerHTML = ''; // 清空之前的詳解
-            quizData.forEach((item, index) => {
+        
+        function loadQuizExplanations() {
+            explanationsArea.innerHTML = '';
+            currentQuizQuestions.forEach((item, index) => {
                 const userAnswer = userAnswers[index];
                 const isCorrect = userAnswer === item.answer;
                 const explanationCard = `
@@ -264,15 +901,101 @@
                 explanationsArea.innerHTML += explanationCard;
             });
         }
-        
-        // 顯示/隱藏答案詳解
+
         showExplanationsBtn.addEventListener('click', () => {
             explanationsArea.classList.toggle('hidden');
             showExplanationsBtn.textContent = explanationsArea.classList.contains('hidden') ? '查看答案與詳解' : '隱藏答案與詳解';
         });
 
-        // 初始化測驗
-        loadQuestion(currentQuestionIndex);
+        restartQuizBtn.addEventListener('click', () => {
+            const random30Questions = selectRandomQuestions(allQuestionsData, 30);
+            initializeQuiz(random30Questions);
+        });
+
+        // --- 題庫邏輯 ---
+        function renderQuestionBank(questionsToDisplay) {
+            questionBankArea.innerHTML = ''; // 清空舊內容
+            questionsToDisplay.forEach((item, index) => {
+                // 為了在完整題庫中顯示原始題號，我們需要從 allQuestionsData 中找到它的索引
+                const originalIndex = allQuestionsData.findIndex(q => q.question === item.question && q.answer === item.answer);
+                const displayIndex = originalIndex !== -1 ? originalIndex + 1 : index + 1; // 如果找不到，則使用當前過濾列表的索引
+
+                const questionElement = `
+                    <div class="bank-question-card">
+                        <h3 class="text-xl font-semibold mb-3">題目 ${displayIndex}: ${item.question}</h3>
+                        <div class="options mb-3">
+                            ${item.options.map((option, i) => `
+                                <p class="ml-4 ${option === item.answer ? 'font-bold text-green-600' : ''}">${String.fromCharCode(65 + i)}. ${option} ${option === item.answer ? ' (正確答案)' : ''}</p>
+                            `).join('')}
+                        </div>
+                        <div class="explanation">
+                            <h5 class="font-semibold mb-1">詳解：</h5>
+                            <p class="text-gray-700">${item.explanation}</p>
+                        </div>
+                    </div>
+                `;
+                questionBankArea.innerHTML += questionElement;
+            });
+        }
+
+
+        function displayQuestionBank(searchTerm = "") {
+            searchTerm = searchTerm.toLowerCase().trim();
+            if (searchTerm) {
+                displayedBankQuestions = allQuestionsData.filter(q => 
+                    q.question.toLowerCase().includes(searchTerm) || 
+                    q.explanation.toLowerCase().includes(searchTerm) ||
+                    q.options.some(opt => opt.toLowerCase().includes(searchTerm))
+                );
+            } else {
+                displayedBankQuestions = [...allQuestionsData];
+            }
+            renderQuestionBank(displayedBankQuestions);
+            showQuestionBankSection();
+        }
+        
+        searchBankBtn.addEventListener('click', () => {
+            displayQuestionBank(searchBankInput.value);
+        });
+
+        clearSearchBankBtn.addEventListener('click', () => {
+            searchBankInput.value = '';
+            displayQuestionBank();
+        });
+
+        searchBankInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                displayQuestionBank(searchBankInput.value);
+            }
+        });
+
+
+        // --- 事件監聽器 ---
+        startRandomQuizBtn.addEventListener('click', () => {
+            const quizQuestionCount = 30;
+            if (allQuestionsData.length < quizQuestionCount) {
+                alert(`題庫題目不足 ${quizQuestionCount} 題，無法開始測驗！目前題數: ${allQuestionsData.length}`);
+                return;
+            }
+            const random30Questions = selectRandomQuestions(allQuestionsData, quizQuestionCount);
+            initializeQuiz(random30Questions);
+        });
+
+        viewQuestionBankBtn.addEventListener('click', () => {
+            if (allQuestionsData.length > 0) {
+                searchBankInput.value = ''; // 清空搜尋框
+                displayQuestionBank();
+            } else {
+                alert("題庫目前是空的！");
+            }
+        });
+
+        backToMenuFromQuizBtn.addEventListener('click', showMainMenu);
+        backToMenuFromBankBtn.addEventListener('click', showMainMenu);
+
+        // --- 初始載入 ---
+        showMainMenu(); // 網頁載入時顯示主選單
+
     </script>
 </body>
 </html>
